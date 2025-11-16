@@ -572,7 +572,7 @@
 
         <div class="grid">
           <div class="field">
-            <label>
+            <label for="homePrice">
               <span class="main-label">Property price</span>
               <span class="hint">What are you buying?</span>
             </label>
@@ -586,7 +586,7 @@
           </div>
 
           <div class="field">
-            <label>
+            <label for="downPayment">
               <span class="main-label">Down payment</span>
               <span class="hint">How much upfront?</span>
             </label>
@@ -600,7 +600,7 @@
           </div>
 
           <div class="field">
-            <label>
+            <label for="interestRate">
               <span class="main-label">Interest rate</span>
               <span class="hint">Annual · %</span>
             </label>
@@ -614,7 +614,7 @@
           </div>
 
           <div class="field">
-            <label>
+            <label for="loanTerm">
               <span class="main-label">Term</span>
               <span class="hint">Years</span>
             </label>
@@ -628,7 +628,7 @@
           </div>
 
           <div class="field">
-            <label>
+            <label for="propertyTax">
               <span class="main-label">Annual property tax</span>
               <span class="hint">Optional</span>
             </label>
@@ -639,7 +639,7 @@
           </div>
 
           <div class="field">
-            <label>
+            <label for="insurance">
               <span class="main-label">Annual insurance</span>
               <span class="hint">Optional</span>
             </label>
@@ -672,7 +672,7 @@
 
         <div class="results-topline">
           <div class="result-label">Estimated monthly payment</div>
-          <div class="result-main" id="monthlyPaymentDisplay">
+          <div class="result-main" id="monthlyPaymentDisplay" aria-live="polite">
             <span class="currency">€</span>
             <span id="monthlyPaymentNumber">0</span>
           </div>
