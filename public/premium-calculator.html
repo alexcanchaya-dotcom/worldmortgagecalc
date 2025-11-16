@@ -451,6 +451,93 @@
       }
     }
 
+        /* ===== ACCESSIBILITY & UI ENHANCEMENTS ===== */
+    
+    /* Enhanced Focus States */
+    input:focus, button:focus, .range input[type="range"]:focus {
+      outline: 3px solid var(--border-focus);
+      outline-offset: 2px;
+      box-shadow: var(--shadow-focus);
+    }
+    
+    /* Larger Touch-Friendly Slider Handles */
+    .range input[type="range"]::-webkit-slider-thumb {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      border: 3px solid var(--panel);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    
+    .range input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 3px 12px rgba(8, 145, 178, 0.3);
+    }
+    
+    .range input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      border: 3px solid var(--panel);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transition: transform var(--transition-fast);
+    }
+    
+    .range input[type="range"]::-moz-range-thumb:hover {
+      transform: scale(1.15);
+    }
+    
+    /* Enhanced CTA Button States */
+    .cta-btn:hover {
+      background: linear-gradient(135deg, var(--accent-hover), #065F7E);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(8, 145, 178, 0.25);
+    }
+    
+    .cta-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 20px rgba(8, 145, 178, 0.2);
+    }
+    
+    .cta-btn:focus {
+      outline: 3px solid var(--border-focus);
+      outline-offset: 3px;
+    }
+    
+    /* Increased Card Spacing */
+    .card, .panel {
+      padding: 32px 28px;
+      margin-bottom: 24px;
+    }
+    
+    /* Visible Label Styles */
+    label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-label);
+      margin-bottom: 8px;
+    }
+    
+    /* Micro-interaction for Payment Update */
+    @keyframes fadeInUpdate {
+      from {
+        opacity: 0.7;
+        transform: scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    .result-row {
+      animation: fadeInUpdate 200ms ease-out;
+    }
+
     @media (max-width: 540px) {
       .grid {
         grid-template-columns: minmax(0, 1fr);
@@ -463,6 +550,8 @@
 </head>
 <body>
   <main class="page">
+
+    
     <header>
       <div class="brand">
         <div class="brand-name"Global Mortgage Calculator</div>
