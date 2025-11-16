@@ -546,6 +546,21 @@
         grid-template-columns: minmax(0, 1fr);
       }
     }
+
+        /* Fieldset & Legend Styles */
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    legend {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      padding: 0 12px;
+    }
   </style>
 </head>
 <body>
@@ -571,6 +586,9 @@
         </div>
 
         <div class="grid">
+                  <!-- Primary Mortgage Fields -->
+        <fieldset>
+          <legend>Primary Mortgage Information</legend>
           <div class="field">
             <label for="homePrice">
               <span class="main-label">Property price</span>
@@ -626,6 +644,12 @@
               <input type="range" id="loanTermRange" min="5" max="40" step="1" value="25" />
             </div>
           </div>
+          
+        </fieldset>
+
+        <!-- Optional Fields -->
+        <fieldset>
+          <legend>Optional Additional Costs</legend>
 
           <div class="field">
             <label for="propertyTax">
@@ -648,6 +672,8 @@
               <input type="number" id="insurance" value="0" min="0" step="100" />
             </div>
           </div>
+          
+        </fieldset>
         </div>
 
         <div id="error" class="error" style="display:none;"></div>
