@@ -6,7 +6,7 @@ const regions = [
     slug: 'ireland',
     flag: '🇮🇪',
     currency: 'EUR',
-    description: 'Calculate your Irish mortgage with current ECB rates',
+    description: 'Calculate Irish net pay with PAYE, USC, PRSI and pension options',
     available: true
   },
   {
