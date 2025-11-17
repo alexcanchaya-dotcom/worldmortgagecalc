@@ -565,7 +565,25 @@
 </head>
 <body>
   <main class="page">
+        /* Error Messages */
+            .error-message {
+                display: none;
+                color: var(--danger);
+                font-size: 0.875rem;
+                margin-top: 4px;
+                font-weight: 500;
+            }
 
+            .error-message:not(:empty) {
+                display: block;
+            }
+
+            input.error,
+            input[type="range"].error {
+                border-color: var(--danger);
+            }
+
+    
     
     <header>
       <div class="brand">
@@ -596,11 +614,12 @@
             </label>
             <div class="input-wrapper">
               <span class="input-affix">€</span>
-              <input type="number" id="homePrice" value="350000" min="50000" step="1000" />
+              <input type="number" id="homePrice" value="350000" min="50000" step="1000"aria-describedby="homePriceError" />
             </div>
             <div class="range">
               <input type="range" id="homePriceRange" min="50000" max="1500000" step="5000" value="350000" />
             </div>
+                            <div id="homePriceError" class="error-message" role="alert" aria-live="assertive"></div>
           </div>
 
           <div class="field">
@@ -610,11 +629,12 @@
             </label>
             <div class="input-wrapper">
               <span class="input-affix">€</span>
-              <input type="number" id="downPayment" value="70000" min="0" step="1000" />
+              <input type="number" id="downPayment" value="70000" min="0" step="1000"aria-describedby="downPaymentError" />
             </div>
             <div class="range">
               <input type="range" id="downPaymentRange" min="0" max="300000" step="2500" value="70000" />
             </div>
+                            <div id="downPaymentError" class="error-message" role="alert" aria-live="assertive"></div>
           </div>
 
           <div class="field">
@@ -623,12 +643,13 @@
               <span class="hint">Annual · %</span>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="interestRate" value="3.5" min="0.1" max="25" step="0.05" />
+              <input type="number" id="interestRate" value="3.5" min="0.1" max="25" step="0.05"aria-describedby="interestRateError" />
               <span class="input-affix">%</span>
             </div>
             <div class="range">
               <input type="range" id="interestRateRange" min="0.5" max="10" step="0.05" value="3.5" />
             </div>
+                            <div id="interestRateError" class="error-message" role="alert" aria-live="assertive"></div>
           </div>
 
           <div class="field">
@@ -637,12 +658,13 @@
               <span class="hint">Years</span>
             </label>
             <div class="input-wrapper">
-              <input type="number" id="loanTerm" value="25" min="5" max="40" step="1" />
+              <input type="number" id="loanTerm" value="25" min="5" max="40" step="1"aria-describedby="loanTermError" />
               <span class="input-affix">years</span>
             </div>
             <div class="range">
               <input type="range" id="loanTermRange" min="5" max="40" step="1" value="25" />
             </div>
+                            <div id="loanTermError" class="error-message" role="alert" aria-live="assertive"></div>
           </div>
           
         </fieldset>
@@ -873,6 +895,49 @@
       const homePrice = Number(inputs.homePrice.value) || 0;
       const downPayment = Number(inputs.downPayment.value) || 0;
       const interestRate = Number(inputs.interestRate.value) || 0;
+
+              // Run validation
+              validateInputs();
+            function validateInputs() {
+                      let isValid = true;
+
+                      // Clear all errors first
+                      document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+                      document.querySelectorAll('input.error').forEach(el => el.classList.remove('error'));
+
+                      // Validate homePrice
+                      if (!inputs.homePrice.value || inputs.homePrice.value < 50000) {
+                                  document.getElementById('homePriceError').textContent = 'Property price must be at least €50,000';
+                                  inputs.homePrice.classList.add('error');
+                                  isValid = false;
+                                }
+
+                      // Validate downPayment
+                      if (!inputs.downPayment.value || inputs.downPayment.value < 0) {
+                                  document.getElementById('downPaymentError').textContent = 'Down payment cannot be negative';
+                                  inputs.downPayment.classList.add('error');
+                                  isValid = false;
+                                } else if (Number(inputs.downPayment.value) >= Number(inputs.homePrice.value)) {
+                                  document.getElementById('downPaymentError').textContent = 'Down payment must be less than property price';
+                                  inputs.downPayment.classList.add('error');
+                                  isValid = false;
+                                }
+
+                      // Validate interestRate
+
+                      if (!inputs.interestRate.value || inputs.interestRate.value <= 0 || inputs.interestRate.value > 25) {
+                                  document.getElementById('interestRateError').textContent = 'Interest rate must be between 0.1% and 25%';
+                                  
+                      // Validate loanTerm
+                      if (!inputs.loanTerm.value || inputs.loanTerm.value < 5 || inputs.loanTerm.value > 40) {
+                                  document.getElementById('loanTermError').textContent = 'Loan term must be between 5 and 40 years';
+                                  inputs.loanTerm.classList.add('error');
+                                  isValid = false;
+                                }
+
+                      return isValid;
+                    }
+      
       const termYears = Number(inputs.loanTerm.value) || 0;
       const propertyTax = Number(inputs.propertyTax.value) || 0;
       const insurance = Number(inputs.insurance.value) || 0;
