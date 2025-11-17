@@ -210,6 +210,15 @@
       color: var(--text-muted);
       display: flex;
       align-items: center;
+          gap: 6px;
+      }
+
+        label .icon {
+                  font-size: 1.1rem;
+                  color: var(--accent);
+                  display: inline-block;
+                  margin-right: 6px;
+              }
       justify-content: space-between;
       gap: 6px;
     }
@@ -681,7 +690,7 @@
           <legend>Primary Mortgage Information</legend>
           <div class="field">
             <label for="homePrice">
-              <span class="main-label">Property price</span>
+              <span class="main-label"><span class="icon">🏠</span> Property price</span>
               <span class="hint">What are you buying?</span>
             </label>
             <div class="input-wrapper">
@@ -700,7 +709,7 @@
               <span class="hint">How much upfront?</span>
             </label>
             <div class="input-wrapper">
-              <span class="input-affix">€</span>
+              <span class="input-affix"<span class="icon">💰</span> >€</span>
               <input type="number" id="downPayment" value="70000" min="0" step="1000"aria-describedby="downPaymentError" />
             </div>
             <div class="range">
@@ -711,7 +720,7 @@
 
           <div class="field">
             <label for="interestRate">
-              <span class="main-label">Interest rate</span>
+              <span class="main-label"><span class="icon">%</span> Interest rate</span>
               <span class="hint">Annual · %</span>
             </label>
             <div class="input-wrapper">
