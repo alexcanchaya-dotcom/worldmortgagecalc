@@ -76,10 +76,10 @@ export default function Home() {
                   See upcoming markets
                 </a>
                 <Link
-                  href="/premium-calculator"
+                  href="/"
                   className="px-5 py-3 rounded-xl bg-white/80 text-gray-900 font-semibold border border-indigo-100 shadow-sm hover:shadow-md transition-transform hover:-translate-y-0.5"
                 >
-                  View premium experience
+                  Try the calculator
                 </Link>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-gray-600">
@@ -209,10 +209,10 @@ export default function Home() {
         <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-2xl p-6 md:p-8 shadow-xl border border-indigo-200/40">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-3 max-w-3xl">
-              <p className="text-sm uppercase tracking-wide text-indigo-200">Premium</p>
+              <p className="text-sm uppercase tracking-wide text-indigo-200">Advanced</p>
               <h2 className="text-2xl md:text-3xl font-bold">Preview the concierge-grade calculator experience</h2>
               <p className="text-indigo-100/90 text-sm md:text-base">
-                Explore a darker, premium layout with scenario layering, stress-test toggles, export-ready PDFs, and team collaboration features designed for brokers and advisors who need elevated visuals.
+                Explore a darker, advanced layout with scenario layering, stress-test toggles, export-ready PDFs, and team collaboration features designed for brokers and advisors who need elevated visuals.
               </p>
               <div className="flex flex-wrap gap-3 text-sm text-indigo-100/90">
                 <span className="px-3 py-1 rounded-full bg-white/10 border border-white/10">Scenario layering</span>
@@ -221,10 +221,10 @@ export default function Home() {
               </div>
             </div>
             <Link
-              href="/premium-calculator"
+              href="/"
               className="px-5 py-3 rounded-xl bg-white text-slate-900 font-semibold shadow-lg shadow-black/30 hover:-translate-y-0.5 transform transition"
             >
-              View premium calculator
+              View main calculator
             </Link>
           </div>
         </div>

@@ -37,43 +37,43 @@ const comparisonRows = [
   {
     label: 'Regions covered',
     standard: 'Ireland (public roadmap for more)',
-    premium: 'Ireland + early access to UK, US, Canada, Spain'
+    advanced: 'Ireland + early access to UK, US, Canada, Spain'
   },
   {
     label: 'Scenario saves',
     standard: 'Single scenario',
-    premium: 'Unlimited named scenarios with sharing links'
+    advanced: 'Unlimited named scenarios with sharing links'
   },
   {
     label: 'Exports',
     standard: 'Basic CSV export',
-    premium: 'Branded PDF, CSV, and Google Sheets sync'
+    advanced: 'Branded PDF, CSV, and Google Sheets sync'
   },
   {
     label: 'Support',
     standard: 'Email within 48h',
-    premium: 'Same-day priority chat + onboarding call'
+    advanced: 'Same-day priority chat + onboarding call'
   },
   {
     label: 'Collaboration',
     standard: '—',
-    premium: 'Team workspaces with permissions'
+    advanced: 'Team workspaces with permissions'
   },
   {
     label: 'Stress tests',
     standard: 'Manual inputs only',
-    premium: 'Preset shocks, holidays, prepayment toggles'
+    advanced: 'Preset shocks, holidays, prepayment toggles'
   }
 ];
 
 const faqs = [
   {
-    question: 'Who is the premium calculator for?',
+    question: 'Who is the advanced calculator for?',
     answer: 'It is built for brokers, buyer agents, and financial planners who need reliable scenarios to share with clients.'
   },
   {
     question: 'Can we customize currencies and branding?',
-    answer: 'Yes. Premium plans include currency toggles, logo placement, and brand color accents on exports.'
+    answer: 'Yes. Advanced plans include currency toggles, logo placement, and brand color accents on exports.'
   },
   {
     question: 'Do you support enterprise security reviews?',
@@ -85,7 +85,7 @@ const faqs = [
   }
 ];
 
-export default function PremiumCalculator() {
+export default function AdvancedCalculator() {
   return (
     <main className="min-h-screen bg-[#0b1021] text-white pb-16">
       <div className="relative overflow-hidden">
@@ -99,7 +99,7 @@ export default function PremiumCalculator() {
               <span>←</span> Back to home
             </Link>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-100 ring-1 ring-emerald-300/40">Premium preview</span>
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-100 ring-1 ring-emerald-300/40">Advanced preview</span>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10">Last updated: Jan 2025</span>
             </div>
           </header>
@@ -108,14 +108,14 @@ export default function PremiumCalculator() {
             <div className="lg:col-span-3 space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 ring-1 ring-white/15 text-sm text-indigo-100">
                 <span className="text-lg">💫</span>
-                Premium calculator experience
+                Advanced calculator experience
               </div>
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-white">
                   Precision-built mortgage workflows with concierge visuals
                 </h1>
                 <p className="text-lg text-indigo-100/90 leading-relaxed">
-                  Upgrade to a broker-grade workspace that pairs elegant UI with serious calculation controls. Deliver export-ready scenarios, compare regions side-by-side, and stress test in seconds—all within a premium, distraction-free layout.
+                  Upgrade to a broker-grade workspace that pairs elegant UI with serious calculation controls. Deliver export-ready scenarios, compare regions side-by-side, and stress test in seconds—all within a focused, distraction-free layout.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3 text-sm">
@@ -129,7 +129,7 @@ export default function PremiumCalculator() {
                   href="mailto:hello@worldmortgagecalc.com"
                   className="px-5 py-3 rounded-2xl border border-white/30 text-white font-semibold bg-white/5 hover:bg-white/10 transition"
                 >
-                  Book a premium demo
+                  Book a demo
                 </a>
                 <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 text-indigo-100/90 ring-1 ring-white/10">
                   <span className="h-2 w-2 rounded-full bg-emerald-300" />
@@ -232,12 +232,12 @@ export default function PremiumCalculator() {
           <section className="grid lg:grid-cols-2 gap-6 items-start">
             <div className="rounded-3xl bg-gradient-to-br from-indigo-600/80 via-indigo-500/80 to-sky-500/80 p-8 shadow-xl ring-1 ring-white/10">
               <div className="flex items-center justify-between text-sm text-indigo-100/90 mb-6">
-                <span className="px-3 py-1 rounded-full bg-white/10 ring-1 ring-white/20">Premium plan</span>
+                <span className="px-3 py-1 rounded-full bg-white/10 ring-1 ring-white/20">Advanced plan</span>
                 <span className="px-3 py-1 rounded-full bg-emerald-400/20 ring-1 ring-emerald-300/50 text-emerald-50">Limited early access</span>
               </div>
               <h2 className="text-3xl font-semibold text-white mb-3">Concierge-grade mortgage calculator</h2>
               <p className="text-indigo-100/90 mb-6 leading-relaxed">
-                The premium experience is for teams that need elevated visuals, rapid scenario building, and export-ready reporting. We tailor onboarding to your markets and help you stand up templates that match your brand.
+                The advanced experience is for teams that need elevated visuals, rapid scenario building, and export-ready reporting. We tailor onboarding to your markets and help you stand up templates that match your brand.
               </p>
               <div className="space-y-3 text-sm text-white/90">
                 <div className="flex items-center gap-3">
@@ -275,7 +275,7 @@ export default function PremiumCalculator() {
 
             <div className="rounded-3xl bg-white/5 ring-1 ring-white/10 p-6 space-y-4">
               <div className="flex items-center justify-between text-sm text-indigo-100/90">
-                <h3 className="text-xl font-semibold text-white">Premium vs standard</h3>
+                <h3 className="text-xl font-semibold text-white">Advanced vs standard</h3>
                 <span className="px-3 py-1 rounded-full bg-white/10 ring-1 ring-white/20">Transparent inclusions</span>
               </div>
               <div className="divide-y divide-white/10">
@@ -283,7 +283,7 @@ export default function PremiumCalculator() {
                   <div key={row.label} className="py-4 grid grid-cols-3 gap-3 text-sm">
                     <div className="text-indigo-100/80">{row.label}</div>
                     <div className="text-indigo-100">{row.standard}</div>
-                    <div className="text-white font-semibold">{row.premium}</div>
+                    <div className="text-white font-semibold">{row.advanced}</div>
                   </div>
                 ))}
               </div>
@@ -294,7 +294,7 @@ export default function PremiumCalculator() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm uppercase tracking-wide text-indigo-200/80">FAQs</p>
-                <h3 className="text-2xl font-semibold text-white">What to expect from the premium experience</h3>
+                <h3 className="text-2xl font-semibold text-white">What to expect from the advanced experience</h3>
               </div>
               <a
                 href="mailto:hello@worldmortgagecalc.com"
