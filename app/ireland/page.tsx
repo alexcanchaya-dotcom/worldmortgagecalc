@@ -27,6 +27,7 @@ export default function IrelandCalculator() {
   const totalPayment = monthlyPayment * loanTerm * 12;
   const totalInterest = totalPayment - loanAmount;
   const interestPercentage = (totalInterest / totalPayment) * 100;
+  const payoffYear = new Date().getFullYear() + loanTerm;
 
   // Generate amortization schedule
   const generateSchedule = () => {
@@ -67,22 +68,51 @@ export default function IrelandCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-sky-50 to-white p-4">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="mb-8">
-          <Link href="/" className="text-green-600 hover:text-green-700 flex items-center gap-2 mb-4">
-            <span>←</span> Back to Home
-          </Link>
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">🇮🇪 Ireland Mortgage Calculator</h1>
-          <p className="text-gray-600">Calculate your monthly mortgage payments with current ECB rates</p>
+        <div className="bg-white/80 backdrop-blur rounded-2xl shadow-lg p-6 border border-emerald-100">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-2">
+              <Link href="/" className="text-emerald-600 hover:text-emerald-700 flex items-center gap-2 text-sm font-semibold">
+                <span>←</span> Back to Home
+              </Link>
+              <h1 className="text-4xl font-bold text-gray-900">🇮🇪 Ireland Mortgage Calculator</h1>
+              <p className="text-gray-600">Calculate your monthly mortgage payments with ECB-aligned estimates.</p>
+              <div className="flex flex-wrap gap-3 text-xs text-gray-500">
+                <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Real-time updates</span>
+                <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Share-ready outputs</span>
+                <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">Mobile friendly</span>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white rounded-xl p-4 shadow-md w-full md:w-72">
+              <p className="text-sm uppercase tracking-wide text-emerald-50">At-a-glance</p>
+              <div className="mt-3 space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span>Monthly</span>
+                  <span className="font-semibold">{formatCurrency(monthlyPayment)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Payoff year</span>
+                  <span className="font-semibold">{payoffYear}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Interest share</span>
+                  <span className="font-semibold">{interestPercentage.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Input Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Mortgage Details</h2>
-            
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-emerald-50">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-semibold text-gray-900">Mortgage details</h2>
+              <span className="text-xs px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Tweak sliders</span>
+            </div>
+
             {/* Loan Amount */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -95,7 +125,7 @@ export default function IrelandCalculator() {
                 step="10000"
                 value={loanAmount}
                 onChange={(e) => setLoanAmount(Number(e.target.value))}
-                className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>€50k</span>
@@ -115,7 +145,7 @@ export default function IrelandCalculator() {
                 step="0.1"
                 value={interestRate}
                 onChange={(e) => setInterestRate(Number(e.target.value))}
-                className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>1%</span>
@@ -124,7 +154,7 @@ export default function IrelandCalculator() {
             </div>
 
             {/* Loan Term */}
-            <div className="mb-6">
+            <div className="mb-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Loan Term: {loanTerm} years
               </label>
@@ -135,7 +165,7 @@ export default function IrelandCalculator() {
                 step="1"
                 value={loanTerm}
                 onChange={(e) => setLoanTerm(Number(e.target.value))}
-                className="w-full h-2 bg-green-200 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500"
               />
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>5 years</span>
@@ -145,69 +175,65 @@ export default function IrelandCalculator() {
           </div>
 
           {/* Results Section */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-semibold mb-6 text-gray-800">Your Mortgage Breakdown</h2>
-            
-            <div className="space-y-4">
-              {/* Monthly Payment */}
-              <div className="bg-green-50 rounded-lg p-4 border-2 border-green-200">
-                <p className="text-sm text-gray-600 mb-1">Monthly Payment</p>
-                <p className="text-3xl font-bold text-green-700">{formatCurrency(monthlyPayment)}</p>
-              </div>
-
-              {/* Total Payment */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Total Amount Paid</p>
-                <p className="text-2xl font-semibold text-gray-800">{formatCurrency(totalPayment)}</p>
-              </div>
-
-              {/* Total Interest */}
-              <div className="bg-blue-50 rounded-lg p-4">
-                <p className="text-sm text-gray-600 mb-1">Total Interest</p>
-                <p className="text-2xl font-semibold text-blue-700">{formatCurrency(totalInterest)}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  ({interestPercentage.toFixed(1)}% of total payment)
-                </p>
-              </div>
-
-              {/* Payment Breakdown Chart */}
-              <div className="mt-6">
-                <p className="text-sm font-medium text-gray-700 mb-2">Payment Breakdown</p>
-                <div className="flex h-8 rounded-lg overflow-hidden">
-                  <div 
-                    className="bg-green-500 flex items-center justify-center text-white text-xs font-medium"
-                    style={{ width: `${((loanAmount / totalPayment) * 100).toFixed(1)}%` }}
-                  >
-                    Principal
-                  </div>
-                  <div 
-                    className="bg-blue-500 flex items-center justify-center text-white text-xs font-medium"
-                    style={{ width: `${interestPercentage.toFixed(1)}%` }}
-                  >
-                    Interest
-                  </div>
-                </div>
-                <div className="flex justify-between text-xs text-gray-600 mt-1">
-                  <span>Principal: {formatCurrency(loanAmount)}</span>
-                  <span>Interest: {formatCurrency(totalInterest)}</span>
-                </div>
-              </div>
-
-              {/* Show Schedule Button */}
-              <button
-                onClick={() => setShowSchedule(!showSchedule)}
-                className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                {showSchedule ? 'Hide' : 'Show'} Amortization Schedule
-              </button>
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-emerald-50 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-semibold text-gray-900">Your mortgage snapshot</h2>
+              <span className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Live updates</span>
             </div>
+
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-100">
+                <p className="text-xs text-gray-600 mb-1">Monthly payment</p>
+                <p className="text-2xl font-bold text-emerald-700">{formatCurrency(monthlyPayment)}</p>
+              </div>
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <p className="text-xs text-gray-600 mb-1">Total paid</p>
+                <p className="text-xl font-semibold text-gray-800">{formatCurrency(totalPayment)}</p>
+              </div>
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                <p className="text-xs text-gray-600 mb-1">Total interest</p>
+                <p className="text-xl font-semibold text-blue-700">{formatCurrency(totalInterest)}</p>
+                <p className="text-[11px] text-blue-700/80 mt-1">{interestPercentage.toFixed(1)}% of total</p>
+              </div>
+            </div>
+
+            {/* Payment Breakdown Chart */}
+            <div className="mt-2">
+              <p className="text-sm font-medium text-gray-700 mb-2">Payment Breakdown</p>
+              <div className="flex h-9 rounded-lg overflow-hidden ring-1 ring-emerald-100">
+                <div
+                  className="bg-emerald-500 flex items-center justify-center text-white text-xs font-medium"
+                  style={{ width: `${((loanAmount / totalPayment) * 100).toFixed(1)}%` }}
+                >
+                  Principal
+                </div>
+                <div
+                  className="bg-blue-500 flex items-center justify-center text-white text-xs font-medium"
+                  style={{ width: `${interestPercentage.toFixed(1)}%` }}
+                >
+                  Interest
+                </div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-600 mt-1">
+                <span>Principal: {formatCurrency(loanAmount)}</span>
+                <span>Interest: {formatCurrency(totalInterest)}</span>
+              </div>
+            </div>
+
+            {/* Show Schedule Button */}
+            <button
+              onClick={() => setShowSchedule(!showSchedule)}
+              className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            >
+              {showSchedule ? 'Hide' : 'Show'} amortization table
+            </button>
           </div>
         </div>
 
         {/* Amortization Schedule */}
         {showSchedule && (
-          <div className="mt-6 bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">Amortization Schedule</h2>
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-emerald-50">
+            <h2 className="text-2xl font-semibold mb-4 text-gray-900">Amortization schedule</h2>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -223,7 +249,7 @@ export default function IrelandCalculator() {
                     <tr key={row.year} className="border-b border-gray-100 hover:bg-gray-50">
                       <td className="py-3 px-4 font-medium text-gray-800">{row.year}</td>
                       <td className="text-right py-3 px-4 text-blue-600">{formatCurrency(row.interest)}</td>
-                      <td className="text-right py-3 px-4 text-green-600">{formatCurrency(row.principal)}</td>
+                      <td className="text-right py-3 px-4 text-emerald-600">{formatCurrency(row.principal)}</td>
                       <td className="text-right py-3 px-4 text-gray-700">{formatCurrency(row.balance)}</td>
                     </tr>
                   ))}
@@ -234,14 +260,17 @@ export default function IrelandCalculator() {
         )}
 
         {/* Info Section */}
-        <div className="mt-6 bg-blue-50 rounded-xl p-6 border border-blue-200">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">💡 About Irish Mortgages</h3>
+        <div className="bg-white rounded-2xl p-6 border border-emerald-50 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">💡 About Irish Mortgages</h3>
+            <span className="text-xs px-3 py-1 rounded-full bg-amber-50 text-amber-700 font-semibold">Guidance only</span>
+          </div>
           <ul className="text-sm text-gray-700 space-y-2">
-            <li>• Most Irish mortgages are offered with terms between 20-30 years</li>
-            <li>• Fixed rates are typically offered for 2-5 year periods</li>
-            <li>• Variable rates fluctuate with ECB base rates</li>
-            <li>• First-time buyers may qualify for Help to Buy scheme</li>
-            <li>• This calculator uses a standard amortization formula and should be used for estimation purposes only</li>
+            <li>• Most Irish mortgages are offered with terms between 20-30 years.</li>
+            <li>• Fixed rates are typically offered for 2-5 year periods.</li>
+            <li>• Variable rates fluctuate with ECB base rates.</li>
+            <li>• First-time buyers may qualify for Help to Buy scheme.</li>
+            <li>• This calculator uses a standard amortization formula and should be used for estimation purposes only.</li>
           </ul>
         </div>
       </div>
