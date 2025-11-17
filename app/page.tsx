@@ -158,13 +158,6 @@ export default function HomePage() {
                   <p className="text-3xl font-bold text-white sm:text-4xl">{formatCurrency(monthlyPayment || 0)}</p>
                   <p className="text-sm text-slate-300">Estimated monthly payment</p>
                 </div>
-                <div className="flex flex-col items-end gap-2 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-right text-xs font-semibold uppercase tracking-widest text-emerald-100 shadow-inner shadow-white/10">
-                  <span className="text-[11px] text-slate-200">Confidence</span>
-                  <span className="flex items-center gap-1 text-base text-emerald-300">
-                    98%
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                  </span>
-                </div>
               </div>
 
               <div className="grid gap-4 text-sm text-slate-100">
