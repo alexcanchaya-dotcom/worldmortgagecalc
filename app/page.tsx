@@ -99,17 +99,12 @@ export default function PremiumCalculator() {
               <span>←</span> Back to home
             </Link>
             <div className="flex items-center gap-3">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-100 ring-1 ring-emerald-300/40">Premium preview</span>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 ring-1 ring-white/10">Last updated: Jan 2025</span>
             </div>
           </header>
 
           <section className="grid lg:grid-cols-5 gap-8 items-center">
             <div className="lg:col-span-3 space-y-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 ring-1 ring-white/15 text-sm text-indigo-100">
-                <span className="text-lg">💫</span>
-                Premium calculator experience
-              </div>
               <div className="space-y-4">
                 <h1 className="text-4xl md:text-5xl font-semibold leading-tight text-white">
                   Precision-built mortgage workflows with concierge visuals
