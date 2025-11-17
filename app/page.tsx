@@ -244,10 +244,10 @@ export default function HomePage() {
             <a className="rounded-full border border-slate-300 bg-slate-100 px-3 py-2 text-slate-900 transition hover:-translate-y-0.5 hover:border-blue-500 hover:text-slate-900" href="mailto:hello@worldmortgagecalc.com">
               Contact us
             </a>
-            <a className="rounded-full border border-slate-300 bg-slate-100 px-3 py-2 text-slate-900 transition hover:-translate-y-0.5 hover:border-blue-500 hover:text-slate-900" href="#privacy">
+            <a className="rounded-full border border-slate-300 bg-slate-100 px-3 py-2 text-slate-900 transition hover:-translate-y-0.5 hover:border-blue-500 hover:text-slate-900" href="/privacy-policy">
               Privacy Policy
             </a>
-            <a className="rounded-full border border-slate-300 bg-slate-100 px-3 py-2 text-slate-900 transition hover:-translate-y-0.5 hover:border-blue-500 hover:text-slate-900" href="#terms">
+            <a className="rounded-full border border-slate-300 bg-slate-100 px-3 py-2 text-slate-900 transition hover:-translate-y-0.5 hover:border-blue-500 hover:text-slate-900" href="/terms">
               Terms of Service
             </a>
           </div>
