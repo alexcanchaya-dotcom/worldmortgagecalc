@@ -1,14 +1,55 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+
+const defaultCurrencyCode = "USD";
+const defaultPropertyPrice = 400000;
+const defaultDownPayment = 80000;
+
+const currencyOptions = [
+  { code: "USD", label: "US Dollar", locale: "en-US" },
+  { code: "EUR", label: "Euro", locale: "de-DE" },
+  { code: "CAD", label: "Canadian Dollar", locale: "en-CA" },
+  { code: "AUD", label: "Australian Dollar", locale: "en-AU" },
+];
+
+const countryOptions = [
+  { code: "US", label: "United States", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "EU", label: "European Union", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "CA", label: "Canada", compoundingPeriods: 2, frequencyLabel: "Semi-annual" },
+  { code: "AU", label: "Australia", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+];
+
+const getCurrencyFormatter = (code: string) => {
+  const option = currencyOptions.find((item) => item.code === code) ?? currencyOptions[0];
+
+  return new Intl.NumberFormat(option.locale, {
+    style: "currency",
+    currency: option.code,
+    maximumFractionDigits: 0,
+  });
+};
 
 export default function HomePage() {
-  const [propertyPrice, setPropertyPrice] = useState(400000);
-  const [propertyPriceDisplay, setPropertyPriceDisplay] = useState("$400,000");
-  const [downPayment, setDownPayment] = useState(80000);
-  const [downPaymentDisplay, setDownPaymentDisplay] = useState("$80,000");
+  const [propertyPrice, setPropertyPrice] = useState(defaultPropertyPrice);
+  const [propertyPriceDisplay, setPropertyPriceDisplay] = useState(() =>
+    getCurrencyFormatter(defaultCurrencyCode).format(defaultPropertyPrice),
+  );
+  const [downPayment, setDownPayment] = useState(defaultDownPayment);
+  const [downPaymentDisplay, setDownPaymentDisplay] = useState(() =>
+    getCurrencyFormatter(defaultCurrencyCode).format(defaultDownPayment),
+  );
   const [interestRate, setInterestRate] = useState(3.5);
   const [loanTerm, setLoanTerm] = useState(30);
+  const [selectedCurrency, setSelectedCurrency] = useState(defaultCurrencyCode);
+  const [selectedCountry, setSelectedCountry] = useState("US");
+
+  const countryOption = useMemo(
+    () => countryOptions.find((option) => option.code === selectedCountry) ?? countryOptions[0],
+    [selectedCountry],
+  );
+
+  const currencyFormatter = useMemo(() => getCurrencyFormatter(selectedCurrency), [selectedCurrency]);
 
   const ctaButton =
     "inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lg transition duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-200";
@@ -16,32 +57,28 @@ export default function HomePage() {
   const loanAmount = Math.max(0, propertyPrice - downPayment);
 
   const monthlyPayment = useMemo(() => {
-    const monthlyRate = interestRate / 100 / 12;
+    const compoundingPeriods = countryOption.compoundingPeriods;
+    const effectiveMonthlyRate =
+      interestRate === 0
+        ? 0
+        : Math.pow(1 + interestRate / 100 / compoundingPeriods, compoundingPeriods / 12) - 1;
     const totalPayments = loanTerm * 12;
 
-    if (monthlyRate === 0) {
-      return loanAmount / totalPayments;
+    if (effectiveMonthlyRate === 0) {
+      return totalPayments === 0 ? 0 : loanAmount / totalPayments;
     }
 
     return (
       loanAmount *
-      ((monthlyRate * Math.pow(1 + monthlyRate, totalPayments)) /
-        (Math.pow(1 + monthlyRate, totalPayments) - 1))
+      ((effectiveMonthlyRate * Math.pow(1 + effectiveMonthlyRate, totalPayments)) /
+        (Math.pow(1 + effectiveMonthlyRate, totalPayments) - 1))
     );
-  }, [interestRate, loanAmount, loanTerm]);
+  }, [countryOption.compoundingPeriods, interestRate, loanAmount, loanTerm]);
 
   const totalPaid = monthlyPayment * loanTerm * 12;
   const totalInterest = totalPaid - loanAmount;
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(value);
-
-  const formatNumberWithSeparators = (value: number) =>
-    Number.isFinite(value) ? value.toLocaleString("en-US") : "";
+  const formatCurrency = useCallback((value: number) => currencyFormatter.format(value), [currencyFormatter]);
 
   const handleCurrencyInput = (
     value: string,
@@ -50,11 +87,14 @@ export default function HomePage() {
   ) => {
     const numericValue = Number(value.replace(/[^0-9.]/g, ""));
     setNumericValue(Number.isFinite(numericValue) ? numericValue : 0);
-    setDisplayValue(
-      value.trim() === ""
-        ? ""
-        : `$${formatNumberWithSeparators(Number.isFinite(numericValue) ? numericValue : 0)}`,
-    );
+    setDisplayValue(value.trim() === "" ? "" : formatCurrency(Number.isFinite(numericValue) ? numericValue : 0));
+  };
+
+  const handleCurrencyChange = (code: string) => {
+    setSelectedCurrency(code);
+    const formatter = getCurrencyFormatter(code);
+    setPropertyPriceDisplay(propertyPrice ? formatter.format(propertyPrice) : "");
+    setDownPaymentDisplay(downPayment ? formatter.format(downPayment) : "");
   };
 
   return (
@@ -89,6 +129,44 @@ export default function HomePage() {
         <div className="grid gap-8 lg:grid-cols-[1.05fr,0.95fr]" id="calculator">
           <section className="relative overflow-hidden rounded-3xl border border-slate-300 bg-white p-6 shadow-lg shadow-slate-200/70 backdrop-blur-xl sm:p-8">
             <div className="space-y-5">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-900" htmlFor="currency">
+                    Currency
+                  </label>
+                  <select
+                    id="currency"
+                    value={selectedCurrency}
+                    onChange={(e) => handleCurrencyChange(e.target.value)}
+                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-[0_12px_30px_rgba(56,189,248,0.18)] focus:-translate-y-0.5 focus:border-emerald-300 focus:ring-4 focus:ring-blue-200"
+                  >
+                    {currencyOptions.map((option) => (
+                      <option key={option.code} value={option.code}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-semibold text-slate-900" htmlFor="country">
+                    Country (compounding rules)
+                  </label>
+                  <select
+                    id="country"
+                    value={selectedCountry}
+                    onChange={(e) => setSelectedCountry(e.target.value)}
+                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 hover:-translate-y-0.5 hover:border-blue-500 hover:shadow-[0_12px_30px_rgba(56,189,248,0.18)] focus:-translate-y-0.5 focus:border-emerald-300 focus:ring-4 focus:ring-blue-200"
+                  >
+                    {countryOptions.map((option) => (
+                      <option key={option.code} value={option.code}>
+                        {option.label} — {option.frequencyLabel} compounding
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-slate-900" htmlFor="property-price">
                   Property price
@@ -192,6 +270,9 @@ export default function HomePage() {
                     {formatCurrency(monthlyPayment || 0)}
                   </p>
                   <p className="text-sm text-slate-600">Estimated monthly payment</p>
+                  <p className="text-xs text-slate-600">
+                    {countryOption.label} — {countryOption.frequencyLabel} compounding, paid monthly
+                  </p>
                 </div>
               </div>
 
