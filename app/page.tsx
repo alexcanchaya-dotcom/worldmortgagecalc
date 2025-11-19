@@ -138,20 +138,13 @@ export default function HomePage() {
           </div>
           <div className="space-y-3">
             <h1 className="text-3xl font-bold leading-tight text-slate-900 sm:text-5xl sm:leading-tight">
-              Global mortgage estimator — simple, fast, and focused
+              World mortgage estimator — simple, fast, and focused
             </h1>
             <p className="mx-auto max-w-3xl text-base leading-relaxed text-slate-700 sm:text-lg">
               Start with the calculator below. Adjust price, down payment, APR, and term to instantly see your estimated monthly payment and total costs.
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="#calculator"
-              className={`${ctaButton} h-12 bg-gradient-to-r from-blue-600 via-blue-600 to-emerald-400 shadow-blue-600/40 active:scale-[0.99]`}
-            >
-              Go to calculator
-              <span className="h-5 w-5 rounded-full bg-white/40 text-sky-800 backdrop-blur-sm">→</span>
-            </a>
             <span className="text-sm text-slate-700">
               Estimates only — not financial advice.
             </span>
