@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "World Mortgage Calculator – Global Mortgage Estimator",
+  title: "World Mortgage Calculator – World Mortgage Estimator",
   description:
-    "World Mortgage Calculator delivers instant monthly payment estimates, total payoff amounts, and transparent interest details for global borrowers.",
+    "World Mortgage Calculator delivers instant monthly payment estimates, total payoff amounts, and transparent interest details for worldwide borrowers.",
 };
 
 export default function RootLayout({

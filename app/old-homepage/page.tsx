@@ -113,7 +113,7 @@ export default function Home() {
                   <span className="font-semibold">UK · US · Canada · Spain</span>
                 </div>
                 <div className="pt-2 text-sm text-indigo-100">
-                  Built for global house hunters, brokers, and expats who need clarity before committing.
+                  Built for worldwide house hunters, brokers, and expats who need clarity before committing.
                 </div>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function Home() {
           </div>
 
           <div className="bg-gradient-to-br from-indigo-600 to-sky-500 text-white rounded-2xl p-6 shadow-lg flex flex-col gap-4">
-            <h3 className="text-xl font-semibold">Built for global expansion</h3>
+            <h3 className="text-xl font-semibold">Built for worldwide expansion</h3>
             <p className="text-indigo-50 text-sm">
               The layout is ready for additional countries with consistent UX, currency-aware formatting, and configurable
               rate presets to keep calculations aligned with local lending norms.
