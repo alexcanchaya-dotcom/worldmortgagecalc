@@ -127,9 +127,9 @@ const buildAmortization = (
   const schedule: { month: number; interest: number; principal: number; balance: number }[] = [];
 
   for (let month = 1; month <= totalPayments; month += 1) {
-    const interestPayment = balance * effectiveMonthlyRate;
-    const principalPayment = Math.max(0, monthlyPayment - interestPayment);
-    balance = Math.max(0, balance - principalPayment);
+    const interestPayment = Math.round(balance * effectiveMonthlyRate * 100) / 100;
+    const principalPayment = Math.max(0, Math.round((monthlyPayment - interestPayment) * 100) / 100);
+    balance = Math.max(0, Math.round((balance - principalPayment) * 100) / 100);
     schedule.push({ month, interest: interestPayment, principal: principalPayment, balance });
   }
 
@@ -202,16 +202,30 @@ export default function HomePage() {
     setDisplayValue: (s: string) => void,
     field: string,
   ) => {
-    const numericValue = Number(value.replace(/[^0-9.]/g, ""));
+    // Remove non-numeric chars, then parse only the first valid decimal
+    const cleaned = value.replace(/[^0-9.]/g, "");
+    const parts = cleaned.split(".");
+    const normalized = parts.length > 1 ? `${parts[0]}.${parts.slice(1).join("")}` : cleaned;
+    const numericValue = Number(normalized);
     const parsed = Number.isFinite(numericValue) ? numericValue : 0;
     setNumericValue(parsed);
     setDisplayValue(value.trim() === "" ? "" : formatCurrency(parsed));
+
+    // Validate the field
     if (parsed <= 0) {
       setErrors((prev) => ({ ...prev, [field]: "Enter a value greater than zero." }));
+    } else if (field === "downPayment" && parsed > propertyPrice) {
+      setErrors((prev) => ({ ...prev, [field]: "Down payment cannot exceed property price." }));
+    } else if (field === "propertyPrice" && downPayment > parsed) {
+      setErrors((prev) => ({ ...prev, downPayment: "Down payment cannot exceed property price." }));
     } else {
       setErrors((prev) => {
         const next = { ...prev };
         delete next[field];
+        // Clear down payment error if it's now valid
+        if (field === "propertyPrice" && downPayment <= parsed) {
+          delete next.downPayment;
+        }
         return next;
       });
     }
@@ -222,6 +236,38 @@ export default function HomePage() {
     const formatter = getCurrencyFormatter(code);
     setPropertyPriceDisplay(propertyPrice ? formatter.format(propertyPrice) : "");
     setDownPaymentDisplay(downPayment ? formatter.format(downPayment) : "");
+  };
+
+  const handleInterestRateChange = (value: number) => {
+    const clamped = Math.max(0, Math.min(50, value));
+    setInterestRate(clamped);
+    if (value < 0) {
+      setErrors((prev) => ({ ...prev, interestRate: "Interest rate cannot be negative." }));
+    } else if (value > 50) {
+      setErrors((prev) => ({ ...prev, interestRate: "Interest rate cannot exceed 50%." }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.interestRate;
+        return next;
+      });
+    }
+  };
+
+  const handleLoanTermChange = (value: number) => {
+    const clamped = Math.max(1, Math.min(50, value));
+    setLoanTerm(clamped);
+    if (value < 1) {
+      setErrors((prev) => ({ ...prev, loanTerm: "Loan term must be at least 1 year." }));
+    } else if (value > 50) {
+      setErrors((prev) => ({ ...prev, loanTerm: "Loan term cannot exceed 50 years." }));
+    } else {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.loanTerm;
+        return next;
+      });
+    }
   };
 
   const amortizationSchedule = useMemo(
@@ -461,13 +507,14 @@ export default function HomePage() {
                     type="number"
                     step="0.01"
                     min="0"
+                    max="50"
                     aria-describedby="interest-rate-helper"
                     value={interestRate}
-                    onChange={(e) => setInterestRate(Number(e.target.value))}
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)]"
+                    onChange={(e) => handleInterestRateChange(Number(e.target.value))}
+                    className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.interestRate ? "border-red-500" : "border-slate-300"}`}
                   />
-                  <p id="interest-rate-helper" className="helper">
-                    Use your quoted APR or a conservative estimate. We include compounding automatically.
+                  <p id="interest-rate-helper" className={`helper ${errors.interestRate ? "text-red-600" : ""}`}>
+                    {errors.interestRate ?? "Use your quoted APR or a conservative estimate. We include compounding automatically."}
                   </p>
                 </div>
               </div>
@@ -482,13 +529,14 @@ export default function HomePage() {
                     id="loan-term"
                     type="number"
                     min="1"
+                    max="50"
                     aria-describedby="loan-term-helper"
                     value={loanTerm}
-                    onChange={(e) => setLoanTerm(Number(e.target.value))}
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)]"
+                    onChange={(e) => handleLoanTermChange(Number(e.target.value))}
+                    className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.loanTerm ? "border-red-500" : "border-slate-300"}`}
                   />
-                  <p id="loan-term-helper" className="helper">
-                    Shorter terms increase monthly payments but lower total interest.
+                  <p id="loan-term-helper" className={`helper ${errors.loanTerm ? "text-red-600" : ""}`}>
+                    {errors.loanTerm ?? "Shorter terms increase monthly payments but lower total interest."}
                   </p>
                 </div>
                 <div className="space-y-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 p-4 text-sm text-slate-700">
