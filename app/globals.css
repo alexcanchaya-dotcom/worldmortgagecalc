@@ -103,17 +103,6 @@ button:focus-visible {
   outline-offset: 2px;
 }
 
-.ad-slot {
-  min-height: 120px;
-  background: repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 12px, #f8fafc 12px, #f8fafc 24px);
-  border: 1px dashed #cbd5e1;
-  border-radius: 16px;
-  display: grid;
-  place-items: center;
-  color: #475569;
-  font-weight: 600;
-}
-
 .cookie-banner {
   position: fixed;
   bottom: 16px;

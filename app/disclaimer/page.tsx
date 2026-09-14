@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Disclaimer",
   description: "Important disclaimers about the World Mortgage Calculator results and content.",
+  alternates: { canonical: "/disclaimer" },
 };
 
 export default function DisclaimerPage() {
@@ -31,7 +32,8 @@ export default function DisclaimerPage() {
         <section className="card-surface p-6">
           <h2 className="text-xl font-semibold text-slate-900">Advertising note</h2>
           <p className="text-sm text-slate-700">
-            We reserve space for advertising that complies with Google AdSense guidelines. Ads are labeled and placed away from critical interactions to minimize distractions.
+            We do not currently show ads. If we add labeled advertising later, we will describe it on the Privacy Policy
+            page instead of leaving empty ad slots on the calculator.
           </p>
         </section>
       </div>

@@ -74,8 +74,8 @@ export default function IrelandCalculator() {
         <div className="bg-white/80 backdrop-blur rounded-2xl shadow-lg p-6 border border-emerald-100">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="space-y-2">
-              <Link href="/" className="text-emerald-600 hover:text-emerald-700 flex items-center gap-2 text-sm font-semibold">
-                <span>←</span> Back to Home
+              <Link href="/?country=IE&currency=EUR" className="text-emerald-600 hover:text-emerald-700 flex items-center gap-2 text-sm font-semibold">
+                <span>←</span> Open Ireland in the main calculator
               </Link>
               <h1 className="text-4xl font-bold text-gray-900">🇮🇪 Ireland Mortgage Calculator</h1>
               <p className="text-gray-600">Calculate your monthly mortgage payments with ECB-aligned estimates.</p>

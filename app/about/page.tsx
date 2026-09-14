@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About World Mortgage Calculator",
   description: "Mission, methodology, and data assumptions behind World Mortgage Calculator.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -50,7 +51,7 @@ export default function AboutPage() {
         <section className="card-surface p-6">
           <h3 className="text-lg font-semibold text-slate-900">Why trust us</h3>
           <p className="mt-2 text-slate-700">
-            We avoid dark patterns, keep ads unobtrusive, and provide disclosure blocks directly next to results. Inputs stay on your device and any analytics are anonymized with consent.
+            We avoid dark patterns, do not currently run ads, and provide disclosure blocks directly next to results. Inputs stay on your device.
           </p>
           <div className="mt-3 flex flex-wrap gap-3 text-xs font-semibold text-slate-700">
             <span className="rounded-full bg-emerald-50 px-4 py-2 text-emerald-700">Transparent assumptions</span>
