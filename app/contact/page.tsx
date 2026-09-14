@@ -28,11 +28,12 @@ export default function ContactPage() {
           <p className="text-slate-700">
             There is no contact form on this site. Use email so your message actually reaches us.
           </p>
+          <p className="break-all text-lg font-semibold text-slate-900">{contactEmail}</p>
           <a
             href={`mailto:${contactEmail}`}
             className="inline-flex w-fit items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
           >
-            Email {contactEmail}
+            Email us
           </a>
           <p className="text-sm text-slate-600">
             We cannot give loan approvals or personalized financial advice. For a live quote, speak with a licensed
