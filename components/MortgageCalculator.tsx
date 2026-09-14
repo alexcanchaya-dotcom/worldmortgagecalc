@@ -17,6 +17,7 @@ import {
   summarizeLoan,
   validateLoanInputs,
 } from "@/lib/mortgage";
+import CookieBanner from "@/components/CookieBanner";
 import { siteUrl } from "@/lib/site";
 
 const defaultCurrencyCode = "USD";
@@ -50,7 +51,7 @@ const faqItems = [
   {
     question: "Do you store my inputs?",
     answer:
-      "No. Calculations happen in your browser. We only save a local notice preference if you dismiss the privacy banner.",
+      "No. Calculations happen in your browser. We only save a local notice preference if you dismiss the compact privacy note under the results.",
   },
   {
     question: "Is this financial advice?",
@@ -655,6 +656,27 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   </div>
                 )}
 
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                    onClick={handleExportCsv}
+                  >
+                    Export CSV
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                    onClick={handleCopyShareLink}
+                  >
+                    Copy link
+                  </button>
+                  {exportStatus && <p className="self-center text-sm text-slate-600">{exportStatus}</p>}
+                  {copyStatus && <p className="self-center text-sm text-slate-600">{copyStatus}</p>}
+                </div>
+
+                <CookieBanner />
+
                 <div className="grid gap-4 lg:grid-cols-2">
                   <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-inner shadow-slate-100">
                     <h3 className="text-lg font-semibold text-slate-900">Payment breakdown</h3>
@@ -769,38 +791,6 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
               </div>
             </div>
           </section>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="card-surface p-5">
-            <h3 className="text-lg font-semibold text-slate-900">Printable & export</h3>
-            <p className="mt-2 text-sm text-slate-700">
-              Download a CSV of the Loan A amortization schedule, including every month of interest, principal, and
-              remaining balance.
-            </p>
-            <button
-              type="button"
-              className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 shadow-inner shadow-slate-100 hover:bg-slate-50"
-              onClick={handleExportCsv}
-            >
-              Export CSV
-            </button>
-            {exportStatus && <p className="mt-2 text-sm text-slate-600">{exportStatus}</p>}
-          </div>
-          <div className="card-surface p-5">
-            <h3 className="text-lg font-semibold text-slate-900">Share results</h3>
-            <p className="mt-2 text-sm text-slate-700">
-              Copy a link that includes your current price, down payment, rate, term, currency, and country.
-            </p>
-            <button
-              type="button"
-              className="mt-3 inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
-              onClick={handleCopyShareLink}
-            >
-              Copy link
-            </button>
-            {copyStatus && <p className="mt-2 text-sm text-slate-600">{copyStatus}</p>}
-          </div>
         </div>
 
         <div className="card-surface p-6">

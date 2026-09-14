@@ -31,30 +31,21 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="cookie-banner card-surface flex flex-col gap-3 bg-white p-4 shadow-2xl shadow-slate-500/20">
-      <div className="flex items-start gap-3">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700" aria-hidden>
-          🍪
-        </span>
-        <div>
-          <p className="text-base font-semibold text-slate-900">Privacy notice</p>
-          <p className="text-sm text-slate-600">
-            Calculations run in your browser. We do not store your loan inputs, and we do not use advertising or
-            tracking cookies. If you dismiss this notice, we save that choice on this device so we do not keep showing
-            it. See the Privacy Policy for the full story.
-          </p>
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-3">
+    <div className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-slate-600">
+        <span className="font-semibold text-slate-900">Privacy. </span>
+        Calculations stay in your browser. We do not use ad or tracking cookies.
+      </p>
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
-          className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
+          className="rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
           onClick={dismiss}
         >
           Got it
         </button>
-        <Link href="/privacy-policy" className="text-sm font-semibold text-blue-700 underline">
-          Privacy policy
+        <Link href="/privacy-policy" className="text-xs font-semibold text-blue-700 underline">
+          Privacy
         </Link>
       </div>
     </div>

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import CookieBanner from "@/components/CookieBanner";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 import { siteUrl } from "@/lib/site";
@@ -64,7 +63,6 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </div>
-        <CookieBanner />
       </body>
     </html>
   );
