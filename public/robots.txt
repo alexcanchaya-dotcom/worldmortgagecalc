@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /old-homepage
+Disallow: /premium-calculator
+
+Host: worldmortgagecalc.com
+Sitemap: https://worldmortgagecalc.com/sitemap.xml
