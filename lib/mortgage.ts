@@ -39,6 +39,8 @@ export const currencyOptions: CurrencyOption[] = [
 export const countryOptions: CountryOption[] = [
   { code: "US", label: "United States", currency: "USD", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "IE", label: "Ireland", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "ES", label: "Spain", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "PT", label: "Portugal", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "EU", label: "European Union", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "CA", label: "Canada", currency: "CAD", compoundingPeriods: 2, frequencyLabel: "Semi-annual" },
   { code: "AU", label: "Australia", currency: "AUD", compoundingPeriods: 12, frequencyLabel: "Monthly" },
@@ -159,6 +161,18 @@ export function buildAmortization(
   }
 
   return schedule;
+}
+
+/** SVG y: larger values plot higher. Remaining balance must use this so the line falls as principal is paid down. */
+export function svgChartY(value: number, max: number): number {
+  if (!Number.isFinite(value) || !Number.isFinite(max) || max <= 0) return 100;
+  const ratio = Math.min(1, Math.max(0, value) / max);
+  return 100 - ratio * 100;
+}
+
+export function remainingBalanceChartYs(schedule: AmortizationRow[]): number[] {
+  const maxBalance = Math.max(...schedule.map((row) => row.balance), 1);
+  return schedule.map((row) => svgChartY(row.balance, maxBalance));
 }
 
 export function summarizeLoan(

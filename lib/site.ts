@@ -1,4 +1,4 @@
-export const siteUrl = "https://worldmortgagecalc.com";
+export const siteUrl = "https://www.worldmortgagecalc.com";
 export const contactEmail = "hello@worldmortgagecalc.com";
 
 export const navLinks = [

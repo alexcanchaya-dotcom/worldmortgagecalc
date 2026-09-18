@@ -3,5 +3,5 @@ Allow: /
 Disallow: /old-homepage
 Disallow: /premium-calculator
 
-Host: worldmortgagecalc.com
-Sitemap: https://worldmortgagecalc.com/sitemap.xml
+Host: www.worldmortgagecalc.com
+Sitemap: https://www.worldmortgagecalc.com/sitemap.xml

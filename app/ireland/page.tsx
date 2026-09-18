@@ -2,11 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { getCountryPreset, getStampDutyNote } from '@/lib/countryPresets';
+
+const irelandPreset = getCountryPreset('IE');
+const irelandStampDuty = getStampDutyNote('IE');
 
 export default function IrelandCalculator() {
-  const [loanAmount, setLoanAmount] = useState(300000);
-  const [interestRate, setInterestRate] = useState(3.5);
-  const [loanTerm, setLoanTerm] = useState(25);
+  const [loanAmount, setLoanAmount] = useState(irelandPreset?.price ? irelandPreset.price - irelandPreset.down : 315000);
+  const [interestRate, setInterestRate] = useState(irelandPreset?.illustrativeRate ?? 3.8);
+  const [loanTerm, setLoanTerm] = useState(irelandPreset?.termYears ?? 25);
   const [showSchedule, setShowSchedule] = useState(false);
 
   // Calculate monthly payment using mortgage formula
@@ -78,7 +82,9 @@ export default function IrelandCalculator() {
                 <span>←</span> Open Ireland in the main calculator
               </Link>
               <h1 className="text-4xl font-bold text-gray-900">🇮🇪 Ireland Mortgage Calculator</h1>
-              <p className="text-gray-600">Calculate your monthly mortgage payments with ECB-aligned estimates.</p>
+              <p className="text-gray-600">
+                Educational euro estimates. The starter rate is illustrative — not a live bank quote and not a promise of approval.
+              </p>
               <div className="flex flex-wrap gap-3 text-xs text-gray-500">
                 <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">Real-time updates</span>
                 <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Share-ready outputs</span>
@@ -136,8 +142,11 @@ export default function IrelandCalculator() {
             {/* Interest Rate */}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Annual Interest Rate: {interestRate}%
+                Illustrative annual rate: {interestRate}%
               </label>
+              <p className="text-xs text-gray-500 mb-2">
+                {irelandPreset?.rateBandLabel ?? 'Educational starter, not a live bank quote.'}
+              </p>
               <input
                 type="range"
                 min="1"
@@ -181,20 +190,22 @@ export default function IrelandCalculator() {
               <span className="text-xs px-3 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">Live updates</span>
             </div>
 
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
               <div className="bg-emerald-50 rounded-lg p-4 border border-emerald-100">
                 <p className="text-xs text-gray-600 mb-1">Monthly payment</p>
                 <p className="text-2xl font-bold text-emerald-700">{formatCurrency(monthlyPayment)}</p>
-              </div>
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <p className="text-xs text-gray-600 mb-1">Total paid</p>
-                <p className="text-xl font-semibold text-gray-800">{formatCurrency(totalPayment)}</p>
+                <p className="text-[11px] text-emerald-800/80 mt-1">Principal + interest only</p>
               </div>
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
                 <p className="text-xs text-gray-600 mb-1">Total interest</p>
-                <p className="text-xl font-semibold text-blue-700">{formatCurrency(totalInterest)}</p>
-                <p className="text-[11px] text-blue-700/80 mt-1">{interestPercentage.toFixed(1)}% of total</p>
+                <p className="text-2xl font-bold text-blue-700">{formatCurrency(totalInterest)}</p>
+                <p className="text-[11px] text-blue-700/80 mt-1">{interestPercentage.toFixed(1)}% of everything you would pay</p>
               </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+              <p className="text-xs text-gray-600 mb-1">Total paid</p>
+              <p className="text-xl font-semibold text-gray-800">{formatCurrency(totalPayment)}</p>
+              <p className="text-[11px] text-gray-500 mt-1">Principal plus all interest over the term</p>
             </div>
 
             {/* Payment Breakdown Chart */}
@@ -221,6 +232,21 @@ export default function IrelandCalculator() {
             </div>
 
             {/* Show Schedule Button */}
+            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-950">
+              <p className="text-xs font-semibold uppercase tracking-wide">{irelandStampDuty.title}</p>
+              <p className="mt-2 text-sm">{irelandStampDuty.body}</p>
+              {irelandStampDuty.guidanceUrl && (
+                <a
+                  href={irelandStampDuty.guidanceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex text-sm font-semibold underline"
+                >
+                  {irelandStampDuty.guidanceLabel ?? 'Official guidance'}
+                </a>
+              )}
+            </div>
+
             <button
               onClick={() => setShowSchedule(!showSchedule)}
               className="w-full mt-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors"
@@ -267,9 +293,10 @@ export default function IrelandCalculator() {
           </div>
           <ul className="text-sm text-gray-700 space-y-2">
             <li>• Most Irish mortgages are offered with terms between 20-30 years.</li>
-            <li>• Fixed rates are typically offered for 2-5 year periods.</li>
-            <li>• Variable rates fluctuate with ECB base rates.</li>
-            <li>• First-time buyers may qualify for Help to Buy scheme.</li>
+            <li>• Fixed rates are typically offered for 2-5 year periods. The rate on this page is an educational starter, not a live quote.</li>
+            <li>• Variable rates can move with ECB decisions. We do not fetch bank rates.</li>
+            <li>• First-time buyers may qualify for Help to Buy — check official Revenue guidance.</li>
+            <li>• Irish stamp duty usually applies on purchase. This page does not calculate it. See <a className="font-semibold text-emerald-700 underline" href="https://www.revenue.ie/en/property/stamp-duty/property/residential-property.aspx" target="_blank" rel="noopener noreferrer">Revenue stamp duty guidance</a>.</li>
             <li>• This calculator uses a standard amortization formula and should be used for estimation purposes only.</li>
           </ul>
         </div>

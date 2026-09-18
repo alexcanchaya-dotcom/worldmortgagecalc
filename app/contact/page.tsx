@@ -31,7 +31,7 @@ export default function ContactPage() {
           <p className="break-all text-lg font-semibold text-slate-900">{contactEmail}</p>
           <a
             href={`mailto:${contactEmail}`}
-            className="inline-flex w-fit items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
+            className="inline-flex w-fit items-center justify-center rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:text-white shadow-lg hover:bg-blue-700"
           >
             Email us
           </a>

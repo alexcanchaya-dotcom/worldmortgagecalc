@@ -41,7 +41,8 @@ export default function AboutPage() {
           <div className="card-surface p-5">
             <h3 className="text-lg font-semibold text-slate-900">Data and assumptions</h3>
             <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-slate-700">
-              <li>No taxes, insurance, HOA fees, or PMI included.</li>
+              <li>No taxes, stamp duty, insurance, HOA fees, or PMI included.</li>
+              <li>Ireland, UK, US, Spain, and Portugal starters use illustrative rate bands, not live quotes.</li>
               <li>No currency conversion; we assume the currency you select is the loan currency.</li>
               <li>Payments are on time with no prepayment penalties considered.</li>
             </ul>

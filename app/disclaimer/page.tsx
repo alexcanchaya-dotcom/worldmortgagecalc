@@ -23,7 +23,8 @@ export default function DisclaimerPage() {
         <section className="card-surface p-6">
           <h2 className="text-xl font-semibold text-slate-900">Key points</h2>
           <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700">
-            <li>Results exclude taxes, insurance, fees, currency fluctuations, and lender-specific charges.</li>
+            <li>Results exclude taxes, stamp duty or transfer tax, insurance, fees, currency fluctuations, and lender-specific charges.</li>
+            <li>Country starter rates are illustrative for education. They are not live bank quotes and do not mean approval.</li>
             <li>Inputs remain on your device; no personal data is stored.</li>
             <li>Always confirm eligibility, rates, and closing costs with a lender.</li>
           </ul>

@@ -5,7 +5,9 @@ import {
   buildAmortization,
   getLoanAmount,
   getMonthlyPayment,
+  remainingBalanceChartYs,
   summarizeLoan,
+  svgChartY,
   validateLoanInputs,
 } from "./mortgage.ts";
 
@@ -58,6 +60,24 @@ test("validation allows a $0 down payment and blocks down > price", () => {
 
   const badTerm = validateLoanInputs({ price: 400000, down: 80000, rate: 3.5, termYears: 0 });
   assert.match(badTerm.loanTerm, /at least 1 year/);
+});
+
+test("remaining-balance chart series falls as the loan is paid down", () => {
+  const schedule = buildAmortization(400000, 80000, 6.25, 30, 12);
+  assert.ok(schedule.length > 2);
+  assert.ok(schedule[0].balance > schedule[schedule.length - 1].balance);
+
+  for (let i = 1; i < schedule.length; i += 1) {
+    assert.ok(schedule[i].balance <= schedule[i - 1].balance + 1e-6);
+  }
+
+  const ys = remainingBalanceChartYs(schedule);
+  assert.equal(ys.length, schedule.length);
+  assert.ok(svgChartY(schedule[0].balance, schedule[0].balance) < 1);
+  assert.ok(ys[0] < ys[ys.length - 1], "SVG y must increase (line falls) as remaining principal shrinks");
+  for (let i = 1; i < ys.length; i += 1) {
+    assert.ok(ys[i] + 1e-6 >= ys[i - 1]);
+  }
 });
 
 test("CSV export includes every amortization row, not just headers", () => {

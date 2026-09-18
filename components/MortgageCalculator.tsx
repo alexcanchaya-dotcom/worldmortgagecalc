@@ -15,17 +15,26 @@ import {
   parseMoneyInput,
   readShareParams,
   summarizeLoan,
+  svgChartY,
   validateLoanInputs,
 } from "@/lib/mortgage";
+import {
+  countryPresets,
+  getCountryPreset,
+  getFieldHelpers,
+  getStampDutyNote,
+  type CountryPreset,
+} from "@/lib/countryPresets";
 import CookieBanner from "@/components/CookieBanner";
 import { siteUrl } from "@/lib/site";
 
-const defaultCurrencyCode = "USD";
-const defaultCountryCode = "US";
-const defaultPropertyPrice = 400000;
-const defaultDownPayment = 80000;
-const defaultRate = 3.5;
-const defaultTerm = 30;
+const defaultPreset = getCountryPreset("US") ?? countryPresets[0];
+const defaultCurrencyCode = defaultPreset.currency;
+const defaultCountryCode = defaultPreset.country;
+const defaultPropertyPrice = defaultPreset.price;
+const defaultDownPayment = defaultPreset.down;
+const defaultRate = defaultPreset.illustrativeRate;
+const defaultTerm = defaultPreset.termYears;
 const defaultComparison = {
   price: 420000,
   down: 90000,
@@ -42,7 +51,17 @@ const faqItems = [
   {
     question: "What costs are not included?",
     answer:
-      "Property taxes, homeowner insurance, HOA dues, and currency fluctuations are not included. Add those to plan your true monthly outlay.",
+      "Property taxes, stamp duty or transfer tax, homeowner insurance, HOA dues, and currency fluctuations are not included. Add those to plan your true monthly outlay.",
+  },
+  {
+    question: "What do the country starters do?",
+    answer:
+      "Ireland, UK, US, Spain, and Portugal buttons fill example price, deposit, term, and an illustrative rate band. Those rates are for education only — not live bank quotes and not a promise of approval.",
+  },
+  {
+    question: "Do you include stamp duty or transfer tax?",
+    answer:
+      "No. Where those taxes usually apply, we show a short note and a link to official guidance. We do not calculate the tax or add it to the monthly payment.",
   },
   {
     question: "Can I compare two scenarios?",
@@ -93,6 +112,9 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
   const [exportStatus, setExportStatus] = useState("");
 
   const countryOption = useMemo(() => getCountryOption(selectedCountry), [selectedCountry]);
+  const selectedPreset = useMemo(() => getCountryPreset(selectedCountry), [selectedCountry]);
+  const stampDutyNote = useMemo(() => getStampDutyNote(selectedCountry), [selectedCountry]);
+  const fieldHelpers = useMemo(() => getFieldHelpers(selectedCountry), [selectedCountry]);
   const currencyFormatter = useMemo(() => getCurrencyFormatter(selectedCurrency), [selectedCurrency]);
   const formatCurrency = useCallback(
     (value: number) => currencyFormatter.format(Number.isFinite(value) ? Math.round(value) : 0),
@@ -180,6 +202,18 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
       setSelectedCurrency(nextCurrency);
       applyCurrency(nextCurrency);
     }
+  };
+
+  const applyPreset = (preset: CountryPreset) => {
+    const formatter = getCurrencyFormatter(preset.currency);
+    setSelectedCountry(preset.country);
+    setSelectedCurrency(preset.currency);
+    setPropertyPrice(preset.price);
+    setPropertyPriceDisplay(formatter.format(preset.price));
+    setDownPayment(preset.down);
+    setDownPaymentDisplay(formatter.format(preset.down));
+    setInterestRate(preset.illustrativeRate);
+    setLoanTerm(preset.termYears);
   };
 
   const handleMoneyChange = (
@@ -280,7 +314,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
     : Math.max(1, loanA.principal);
 
   return (
-    <div className="bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 pb-16 pt-6 sm:pt-10">
+    <div className="bg-gradient-to-b from-slate-50 via-white to-slate-100 px-4 pb-16 pt-4 sm:pt-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }} />
       <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-[28px] border border-slate-200 bg-white/90 p-6 shadow-[0_25px_60px_rgba(15,23,42,0.12)] backdrop-blur-xl sm:p-10">
@@ -289,16 +323,16 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
             <div className="inline-flex items-center gap-3 rounded-full bg-sky-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-sky-700">
               Trusted, transparent, global
             </div>
-            <h1 className="section-heading text-3xl leading-tight text-slate-900 sm:text-5xl">
+            <h1 className="section-heading text-3xl leading-tight text-slate-900 sm:text-4xl">
               Plan your mortgage with clear assumptions and instant results
             </h1>
             <p className="max-w-2xl text-lg text-slate-700">
-              Input your price, down payment, APR, and term to see a real-time payment estimate, an amortization
-              snapshot, and the total interest you could pay.
+              Input your price, {fieldHelpers.depositLabel.toLowerCase()}, APR, and term to see a real-time payment
+              estimate, an amortization snapshot, and the total interest you could pay.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <a
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-emerald-500 px-6 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-700 to-emerald-700 px-6 py-3 text-sm font-semibold text-white hover:text-white shadow-lg transition hover:shadow-xl"
                 href="#calculator"
               >
                 Start calculating
@@ -338,26 +372,43 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
             </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-6 shadow-lg shadow-slate-200/80">
-            <p className="text-sm font-semibold text-slate-700">Ireland</p>
-            <p className="text-lg font-bold text-slate-900">Need euro figures and Irish notes?</p>
+            <p className="text-sm font-semibold text-slate-700">Country starters</p>
+            <p className="text-lg font-bold text-slate-900">Ireland, UK, US, Spain, or Portugal</p>
             <p className="text-sm text-slate-600">
-              Ireland is in the country list below, or use the dedicated Ireland page for ECB-oriented examples.
+              Each button fills example price, deposit, term, and an illustrative rate band. These are educational
+              starters — not live bank quotes and not a promise of approval.
             </p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
-                onClick={() => handleCountryChange("IE")}
-              >
-                Use Ireland defaults
-              </button>
+            <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Country starter presets">
+              {countryPresets.map((preset) => {
+                const isActive = selectedCountry === preset.country;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold shadow-sm ${
+                      isActive
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+                    }`}
+                    onClick={() => applyPreset(preset)}
+                  >
+                    {preset.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedPreset && (
+              <p className="mt-3 text-xs font-semibold text-slate-600">{selectedPreset.rateBandLabel}</p>
+            )}
+            {selectedCountry === "IE" && (
               <Link
                 href="/ireland"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
               >
-                Open /ireland
+                Open the Ireland page
               </Link>
-            </div>
+            )}
           </div>
         </div>
 
@@ -419,13 +470,19 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                       </option>
                     ))}
                   </select>
-                  {selectedCountry === "IE" && (
+                  {selectedPreset && (
                     <p className="helper">
-                      Ireland selected (EUR). You can also use the{" "}
-                      <Link href="/ireland" className="font-semibold text-blue-700 underline">
-                        Ireland calculator
-                      </Link>
-                      .
+                      {selectedPreset.label} starter uses {selectedPreset.currency} and{" "}
+                      {selectedPreset.termYears}-year example numbers.{" "}
+                      {selectedCountry === "IE" && (
+                        <>
+                          You can also use the{" "}
+                          <Link href="/ireland" className="font-semibold text-blue-700 underline">
+                            Ireland calculator
+                          </Link>
+                          .
+                        </>
+                      )}
                     </p>
                   )}
                 </div>
@@ -435,7 +492,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 <label className="text-sm font-semibold text-slate-900" htmlFor="property-price">
                   Property price
                 </label>
-                <p className="helper">Enter the purchase price before fees.</p>
+                <p className="helper">{fieldHelpers.priceHint}</p>
                 <input
                   id="property-price"
                   type="text"
@@ -448,16 +505,16 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.propertyPrice ? "input-error" : ""}`}
                 />
                 <p id="property-price-helper" className={`helper ${errors.propertyPrice ? "text-red-600" : ""}`}>
-                  {errors.propertyPrice ?? "Tip: add taxes and fees separately in your budget."}
+                  {errors.propertyPrice ?? fieldHelpers.priceHelper}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-slate-900" htmlFor="down-payment">
-                    Down payment
+                    {fieldHelpers.depositLabel}
                   </label>
-                  <p className="helper">$0 down is allowed. A higher down payment lowers monthly costs.</p>
+                  <p className="helper">{fieldHelpers.downHint}</p>
                   <input
                     id="down-payment"
                     type="text"
@@ -470,7 +527,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.downPayment ? "input-error" : "input-success"}`}
                   />
                   <p id="down-payment-helper" className={`helper ${errors.downPayment ? "text-red-600" : ""}`}>
-                    {errors.downPayment ?? "Common target: 20% to avoid PMI (varies by lender)."}
+                    {errors.downPayment ?? fieldHelpers.downHelper}
                   </p>
                 </div>
 
@@ -490,7 +547,10 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.interestRate ? "input-error" : ""}`}
                   />
                   <p id="interest-rate-helper" className={`helper ${errors.interestRate ? "text-red-600" : ""}`}>
-                    {errors.interestRate ?? "Use your quoted APR or a conservative estimate. We include compounding automatically."}
+                    {errors.interestRate ??
+                      (selectedPreset
+                        ? selectedPreset.rateBandLabel
+                        : "Use a quoted APR or a conservative estimate. Preset rates are illustrative only.")}
                   </p>
                 </div>
               </div>
@@ -500,7 +560,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   <label className="text-sm font-semibold text-slate-900" htmlFor="loan-term">
                     Loan term (years)
                   </label>
-                  <p className="helper">30 years is standard in the US; 15 years builds equity faster.</p>
+                  <p className="helper">{fieldHelpers.termHint}</p>
                   <input
                     id="loan-term"
                     type="number"
@@ -543,7 +603,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                       {errors.comparePrice && <span className="helper text-red-600">{errors.comparePrice}</span>}
                     </label>
                     <label className="space-y-2 text-sm font-semibold text-slate-900" htmlFor="compare-down">
-                      Down payment
+                      {fieldHelpers.depositLabel}
                       <input
                         id="compare-down"
                         type="number"
@@ -583,12 +643,18 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     <div className="rounded-2xl border border-slate-200 bg-blue-50 p-4 text-slate-900">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Loan A</p>
                       <p className="text-2xl font-bold">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly | Total {formatCurrency(loanA.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">
+                        Monthly · Total interest {formatCurrency(loanA.totalInterest)}
+                      </p>
+                      <p className="text-sm text-slate-600">Total paid {formatCurrency(loanA.totalPaid)}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-emerald-50 p-4 text-slate-900">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Loan B</p>
                       <p className="text-2xl font-bold">{formatCurrency(loanB.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly | Total {formatCurrency(loanB.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">
+                        Monthly · Total interest {formatCurrency(loanB.totalInterest)}
+                      </p>
+                      <p className="text-sm text-slate-600">Total paid {formatCurrency(loanB.totalPaid)}</p>
                     </div>
                   </div>
                 </div>
@@ -617,44 +683,77 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="rounded-2xl border border-slate-200 bg-blue-50 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Loan A</p>
-                      <p className="mt-2 text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly payment</p>
+                      <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
+                          <p className="text-sm text-slate-600">Monthly payment</p>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
+                          <p className="text-sm text-slate-600">Total interest</p>
+                        </div>
+                      </div>
                       <ul className="mt-3 space-y-1 text-sm text-slate-700">
-                        <li>Interest: {formatCurrency(loanA.totalInterest)}</li>
                         <li>Total paid: {formatCurrency(loanA.totalPaid)}</li>
                         <li>Principal: {formatCurrency(loanA.principal)}</li>
                       </ul>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-emerald-50 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Loan B</p>
-                      <p className="mt-2 text-3xl font-bold text-slate-900">{formatCurrency(loanB.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly payment</p>
+                      <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanB.monthlyPayment)}</p>
+                          <p className="text-sm text-slate-600">Monthly payment</p>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanB.totalInterest)}</p>
+                          <p className="text-sm text-slate-600">Total interest</p>
+                        </div>
+                      </div>
                       <ul className="mt-3 space-y-1 text-sm text-slate-700">
-                        <li>Interest: {formatCurrency(loanB.totalInterest)}</li>
                         <li>Total paid: {formatCurrency(loanB.totalPaid)}</li>
                         <li>Principal: {formatCurrency(loanB.principal)}</li>
                       </ul>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Monthly payment</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Principal + interest only</p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Total interest</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
-                      <p className="text-sm text-slate-600">Over {loanTerm > 0 ? loanTerm : 0} years</p>
+                  <div className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Monthly payment</p>
+                        <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
+                        <p className="text-sm text-slate-600">Principal + interest only</p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Total interest</p>
+                        <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
+                        <p className="text-sm text-slate-600">Over the full {loanTerm > 0 ? loanTerm : 0}-year term</p>
+                      </div>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-700">Total paid</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalPaid)}</p>
-                      <p className="text-sm text-slate-600">Includes original principal</p>
+                      <p className="text-2xl font-bold text-slate-900">{formatCurrency(loanA.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">Principal plus all interest. Amortization below stays honest about the split.</p>
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
+                    {stampDutyNote.title}
+                  </p>
+                  <p className="mt-2 text-sm">{stampDutyNote.body}</p>
+                  {stampDutyNote.guidanceUrl && (
+                    <a
+                      href={stampDutyNote.guidanceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex text-sm font-semibold text-amber-900 underline"
+                    >
+                      {stampDutyNote.guidanceLabel ?? "Official guidance"}
+                    </a>
+                  )}
+                </div>
 
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -677,78 +776,25 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
 
                 <CookieBanner />
 
-                <div className="grid gap-4 lg:grid-cols-2">
+                <div className="grid gap-3">
                   <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-inner shadow-slate-100">
-                    <h3 className="text-lg font-semibold text-slate-900">Payment breakdown</h3>
-                    <ul className="mt-2 space-y-2 text-sm text-slate-700">
-                      <li className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-blue-500" /> Principal portion grows over time
+                    <h3 className="text-lg font-semibold text-slate-900">Assumptions</h3>
+                    <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-slate-700">
+                      <li>
+                        {selectedCountry === "IE"
+                          ? "No stamp duty, solicitor fees, insurance, or other cash-to-close costs included."
+                          : "No taxes, stamp duty, insurance, PMI, HOA fees, or currency fluctuations included."}
                       </li>
-                      <li className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-emerald-500" /> Interest share declines each payment
-                      </li>
-                      <li className="flex items-center gap-2">
-                        <span className="h-3 w-3 rounded-full bg-slate-400" /> Balance trends toward zero before term end
-                      </li>
+                      <li>Fixed-rate loan with level payments; compounding per selected country.</li>
+                      <li>Payments made on time with no prepayments or fees.</li>
                     </ul>
-                    <div className="mt-4 h-56 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                      <svg viewBox="0 0 100 100" className="h-full w-full" role="img" aria-label="Principal and interest over time">
-                        <polyline
-                          fill="none"
-                          stroke="#3b82f6"
-                          strokeWidth="2"
-                          points={chartPoints
-                            .map((p, idx) => {
-                              const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                              const y = 100 - (loanA.monthlyPayment ? (p.principal / loanA.monthlyPayment) * 100 : 0);
-                              return `${x},${y}`;
-                            })
-                            .join(" ")}
-                        />
-                        <polyline
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="2"
-                          points={chartPoints
-                            .map((p, idx) => {
-                              const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                              const y = 100 - (loanA.monthlyPayment ? (p.interest / loanA.monthlyPayment) * 100 : 0);
-                              return `${x},${y}`;
-                            })
-                            .join(" ")}
-                        />
-                        <polyline
-                          fill="none"
-                          stroke="#94a3b8"
-                          strokeWidth="2"
-                          points={chartPoints
-                            .map((p, idx) => {
-                              const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                              const y = (p.balance / maxBalance) * 100;
-                              return `${x},${y}`;
-                            })
-                            .join(" ")}
-                        />
-                      </svg>
-                    </div>
                   </div>
-
-                  <div className="grid gap-3">
-                    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-inner shadow-slate-100">
-                      <h3 className="text-lg font-semibold text-slate-900">Assumptions</h3>
-                      <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                        <li>No taxes, insurance, PMI, HOA fees, or currency fluctuations included.</li>
-                        <li>Fixed-rate loan with level payments; compounding per selected country.</li>
-                        <li>Payments made on time with no prepayments or fees.</li>
-                      </ul>
-                    </div>
-                    <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-amber-900 shadow-inner shadow-amber-100">
-                      <h3 className="text-lg font-semibold">Disclaimers</h3>
-                      <p className="text-sm">
-                        This is an educational tool, not financial advice. Confirm details with a licensed lender before
-                        committing to a loan.
-                      </p>
-                    </div>
+                  <div className="rounded-3xl border border-amber-200 bg-amber-50 p-4 text-amber-900 shadow-inner shadow-amber-100">
+                    <h3 className="text-lg font-semibold">Disclaimers</h3>
+                    <p className="text-sm">
+                      This is an educational tool, not financial advice. Confirm details with a licensed lender before
+                      committing to a loan.
+                    </p>
                   </div>
                 </div>
 
@@ -775,22 +821,95 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 </div>
               </div>
             </div>
-
-            <div className="card-surface p-6 sm:p-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Knowledge</p>
-                <h3 className="text-xl font-semibold text-slate-900">FAQs</h3>
-              </div>
-              <div className="mt-4 space-y-3">
-                {faqItems.map((item) => (
-                  <details key={item.question} className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-inner shadow-slate-100">
-                    <summary className="cursor-pointer text-sm font-semibold text-slate-900">{item.question}</summary>
-                    <p className="mt-2 text-sm text-slate-700">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
           </section>
+        </div>
+
+        <div className="card-surface p-6 sm:p-8" id="amortization-chart">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">After the calculator</p>
+              <h3 className="text-xl font-semibold text-slate-900">How the loan changes over time</h3>
+              <p className="helper">
+                This chart sits below the calculator so the monthly payment and total interest stay first. Lines show the
+                split of each payment and the remaining balance.
+              </p>
+            </div>
+          </div>
+          <ul className="mt-4 flex flex-wrap gap-4 text-sm text-slate-700">
+            <li className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-blue-500" /> Blue: principal share of the payment
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-emerald-500" /> Green: interest share of the payment
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-slate-400" /> Grey: remaining balance
+            </li>
+          </ul>
+          <div className="mt-4 h-64 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <svg
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              className="h-full w-full"
+              role="img"
+              aria-label="Chart of principal share, interest share, and remaining balance over the loan term"
+            >
+              <polyline
+                fill="none"
+                stroke="#3b82f6"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                points={chartPoints
+                  .map((p, idx) => {
+                    const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
+                    const y = svgChartY(p.principal, loanA.monthlyPayment || 1);
+                    return `${x},${y}`;
+                  })
+                  .join(" ")}
+              />
+              <polyline
+                fill="none"
+                stroke="#10b981"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                points={chartPoints
+                  .map((p, idx) => {
+                    const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
+                    const y = svgChartY(p.interest, loanA.monthlyPayment || 1);
+                    return `${x},${y}`;
+                  })
+                  .join(" ")}
+              />
+              <polyline
+                fill="none"
+                stroke="#94a3b8"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                points={chartPoints
+                  .map((p, idx) => {
+                    const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
+                    const y = svgChartY(p.balance, maxBalance);
+                    return `${x},${y}`;
+                  })
+                  .join(" ")}
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div className="card-surface p-6 sm:p-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Knowledge</p>
+            <h3 className="text-xl font-semibold text-slate-900">FAQs</h3>
+          </div>
+          <div className="mt-4 space-y-3">
+            {faqItems.map((item) => (
+              <details key={item.question} className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-inner shadow-slate-100">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-900">{item.question}</summary>
+                <p className="mt-2 text-sm text-slate-700">{item.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
 
         <div className="card-surface p-6">

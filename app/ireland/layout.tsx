@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Ireland Mortgage Calculator",
-  description: "Estimate Irish mortgage payments in euro with a simple amortization view.",
+  description: "Educational Irish euro mortgage estimates with monthly payment, total interest, and a stamp-duty reminder.",
   alternates: { canonical: "/ireland" },
 };
 

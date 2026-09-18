@@ -22,13 +22,13 @@ export default function PremiumCalculatorPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700"
+            className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:text-white hover:bg-blue-700"
           >
             Use the free calculator
           </Link>
           <a
             href={`mailto:${contactEmail}`}
-            className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+            className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 hover:text-slate-800 hover:bg-slate-50"
           >
             Email us
           </a>
