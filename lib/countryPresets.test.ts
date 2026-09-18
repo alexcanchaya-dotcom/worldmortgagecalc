@@ -3,6 +3,7 @@ import test from "node:test";
 import {
   countryPresets,
   getCountryPreset,
+  getFieldHelpers,
   getStampDutyNote,
   isIllustrativeRateCopy,
 } from "./countryPresets.ts";
@@ -48,6 +49,24 @@ test("stamp-duty notes stay honest and do not invent a calculated tax", () => {
   const generic = getStampDutyNote("CA");
   assert.match(generic.body, /check local rules/i);
   assert.equal(generic.guidanceUrl, undefined);
+});
+
+test("Ireland helpers talk about stamp duty and cash to close, not US PMI", () => {
+  const ireland = getCountryPreset("IE");
+  assert.ok(ireland);
+  const copy = [
+    ireland.helpers.depositLabel,
+    ireland.helpers.priceHint,
+    ireland.helpers.priceHelper,
+    ireland.helpers.downHint,
+    ireland.helpers.downHelper,
+    ireland.helpers.termHint,
+  ].join(" ");
+  assert.match(copy, /stamp duty/i);
+  assert.match(copy, /cash to close|solicitor|deposit/i);
+  assert.doesNotMatch(copy, /PMI|\$0|US target/i);
+  assert.equal(ireland.helpers.depositLabel, "Deposit");
+  assert.equal(getFieldHelpers("IE").downHelper, ireland.helpers.downHelper);
 });
 
 test("preset totals still use the shared amortization math", () => {

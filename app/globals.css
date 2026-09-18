@@ -57,12 +57,14 @@ body {
   min-height: 100vh;
 }
 
-a {
-  color: var(--color-primary);
-}
+@layer base {
+  a {
+    color: var(--color-primary);
+  }
 
-a:hover {
-  color: var(--color-primary-strong);
+  a:hover {
+    color: var(--color-primary-strong);
+  }
 }
 
 .focus-ring {

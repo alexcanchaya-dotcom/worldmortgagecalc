@@ -7,6 +7,15 @@ export type StampDutyNote = {
   guidanceLabel?: string;
 };
 
+export type FieldHelpers = {
+  depositLabel: string;
+  priceHint: string;
+  priceHelper: string;
+  downHint: string;
+  downHelper: string;
+  termHint: string;
+};
+
 export type CountryPreset = {
   id: CountryPresetId;
   /** ISO-style country code used by the calculator (UK is GB). */
@@ -21,6 +30,16 @@ export type CountryPreset = {
   illustrativeRate: number;
   rateBandLabel: string;
   stampDuty: StampDutyNote;
+  helpers: FieldHelpers;
+};
+
+const genericHelpers: FieldHelpers = {
+  depositLabel: "Down payment",
+  priceHint: "Enter the purchase price before fees.",
+  priceHelper: "Tip: add taxes and fees separately in your budget.",
+  downHint: "A zero deposit is allowed. A higher deposit lowers monthly costs.",
+  downHelper: "Check local deposit norms. Transfer taxes are extra cash at purchase, not in the monthly figure.",
+  termHint: "Shorter terms increase monthly payments but lower total interest.",
 };
 
 export const countryPresets: CountryPreset[] = [
@@ -41,6 +60,16 @@ export const countryPresets: CountryPreset[] = [
       guidanceUrl: "https://www.revenue.ie/en/property/stamp-duty/property/residential-property.aspx",
       guidanceLabel: "Revenue stamp duty guidance",
     },
+    helpers: {
+      depositLabel: "Deposit",
+      priceHint: "Enter the purchase price before stamp duty and legal fees.",
+      priceHelper:
+        "Stamp duty, solicitor fees, and survey costs are cash to close. They are not in the monthly repayment.",
+      downHint: "A zero deposit is allowed here. A higher deposit lowers the monthly repayment.",
+      downHelper:
+        "This starter uses a 10% deposit, common for many Irish first-time buyers. Budget extra cash for stamp duty, solicitor fees, and a survey.",
+      termHint: "25 years is a common Irish term. Shorter terms raise the monthly repayment but cut total interest.",
+    },
   },
   {
     id: "GB",
@@ -59,6 +88,15 @@ export const countryPresets: CountryPreset[] = [
       guidanceUrl: "https://www.gov.uk/stamp-duty-land-tax",
       guidanceLabel: "GOV.UK Stamp Duty Land Tax",
     },
+    helpers: {
+      depositLabel: "Deposit",
+      priceHint: "Enter the purchase price before stamp duty and legal fees.",
+      priceHelper: "Stamp duty or land tax is extra cash at purchase. This calculator does not add it to the monthly payment.",
+      downHint: "A zero deposit is allowed here. A higher deposit lowers the monthly repayment.",
+      downHelper:
+        "This starter uses a 10% deposit. Stamp Duty Land Tax (or LBTT in Scotland, LTT in Wales) is extra at purchase.",
+      termHint: "25 years is a common UK term. Shorter terms raise the monthly repayment but cut total interest.",
+    },
   },
   {
     id: "US",
@@ -76,6 +114,14 @@ export const countryPresets: CountryPreset[] = [
       body: "There is no single US federal stamp duty. Some states and counties charge transfer or recording taxes. This calculator does not estimate those local costs — check the rules where the home is.",
       guidanceUrl: "https://www.consumerfinance.gov/owning-a-home/",
       guidanceLabel: "CFPB owning-a-home guide",
+    },
+    helpers: {
+      depositLabel: "Down payment",
+      priceHint: "Enter the purchase price before fees.",
+      priceHelper: "Tip: add taxes, insurance, and closing costs separately in your budget.",
+      downHint: "A $0 down payment is allowed. A higher down payment lowers monthly costs.",
+      downHelper: "A 20% down payment is a common US target to avoid PMI (varies by lender).",
+      termHint: "30 years is standard in the US; 15 years builds equity faster.",
     },
   },
   {
@@ -96,6 +142,14 @@ export const countryPresets: CountryPreset[] = [
         "https://sede.agenciatributaria.gob.es/Sede/en_gb/impuestos-tasas/impuesto-transmisiones-patrimoniales-actos-juridicos-documentados.html",
       guidanceLabel: "Agencia Tributaria ITP / AJD",
     },
+    helpers: {
+      depositLabel: "Deposit",
+      priceHint: "Enter the purchase price before transfer tax and notary fees.",
+      priceHelper: "ITP on resales, or VAT plus AJD on new builds, is extra cash at purchase — not in the monthly figure.",
+      downHint: "A zero deposit is allowed here. A higher deposit lowers the monthly repayment.",
+      downHelper: "This starter uses a 20% deposit, a common Spanish resident example. Transfer tax is extra at purchase.",
+      termHint: "25 years is a common Spanish term. Shorter terms raise the monthly repayment but cut total interest.",
+    },
   },
   {
     id: "PT",
@@ -114,6 +168,14 @@ export const countryPresets: CountryPreset[] = [
       guidanceUrl: "https://www.portaldasfinancas.gov.pt/",
       guidanceLabel: "Portal das Finanças",
     },
+    helpers: {
+      depositLabel: "Deposit",
+      priceHint: "Enter the purchase price before IMT and stamp duty.",
+      priceHelper: "IMT and Imposto do Selo are extra cash to close. This calculator does not add them to the monthly payment.",
+      downHint: "A zero deposit is allowed here. A higher deposit lowers the monthly repayment.",
+      downHelper: "This starter uses a 20% deposit, a common Portuguese example. IMT and stamp duty are extra at purchase.",
+      termHint: "30 years is a common Portuguese term. Shorter terms raise the monthly repayment but cut total interest.",
+    },
   },
 ];
 
@@ -128,6 +190,10 @@ export function getCountryPreset(countryOrId: string): CountryPreset | undefined
 
 export function getStampDutyNote(countryCode: string): StampDutyNote {
   return getCountryPreset(countryCode)?.stampDuty ?? genericStampDutyNote;
+}
+
+export function getFieldHelpers(countryCode: string): FieldHelpers {
+  return getCountryPreset(countryCode)?.helpers ?? genericHelpers;
 }
 
 export function isIllustrativeRateCopy(text: string): boolean {
