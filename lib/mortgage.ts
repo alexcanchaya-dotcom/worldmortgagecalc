@@ -39,6 +39,8 @@ export const currencyOptions: CurrencyOption[] = [
 export const countryOptions: CountryOption[] = [
   { code: "US", label: "United States", currency: "USD", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "IE", label: "Ireland", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "ES", label: "Spain", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
+  { code: "PT", label: "Portugal", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "EU", label: "European Union", currency: "EUR", compoundingPeriods: 12, frequencyLabel: "Monthly" },
   { code: "CA", label: "Canada", currency: "CAD", compoundingPeriods: 2, frequencyLabel: "Semi-annual" },
   { code: "AU", label: "Australia", currency: "AUD", compoundingPeriods: 12, frequencyLabel: "Monthly" },

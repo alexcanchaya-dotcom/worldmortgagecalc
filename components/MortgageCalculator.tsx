@@ -17,15 +17,17 @@ import {
   summarizeLoan,
   validateLoanInputs,
 } from "@/lib/mortgage";
+import { countryPresets, getCountryPreset, getStampDutyNote, type CountryPreset } from "@/lib/countryPresets";
 import CookieBanner from "@/components/CookieBanner";
 import { siteUrl } from "@/lib/site";
 
-const defaultCurrencyCode = "USD";
-const defaultCountryCode = "US";
-const defaultPropertyPrice = 400000;
-const defaultDownPayment = 80000;
-const defaultRate = 3.5;
-const defaultTerm = 30;
+const defaultPreset = getCountryPreset("US") ?? countryPresets[0];
+const defaultCurrencyCode = defaultPreset.currency;
+const defaultCountryCode = defaultPreset.country;
+const defaultPropertyPrice = defaultPreset.price;
+const defaultDownPayment = defaultPreset.down;
+const defaultRate = defaultPreset.illustrativeRate;
+const defaultTerm = defaultPreset.termYears;
 const defaultComparison = {
   price: 420000,
   down: 90000,
@@ -42,7 +44,17 @@ const faqItems = [
   {
     question: "What costs are not included?",
     answer:
-      "Property taxes, homeowner insurance, HOA dues, and currency fluctuations are not included. Add those to plan your true monthly outlay.",
+      "Property taxes, stamp duty or transfer tax, homeowner insurance, HOA dues, and currency fluctuations are not included. Add those to plan your true monthly outlay.",
+  },
+  {
+    question: "What do the country starters do?",
+    answer:
+      "Ireland, UK, US, Spain, and Portugal buttons fill example price, deposit, term, and an illustrative rate band. Those rates are for education only — not live bank quotes and not a promise of approval.",
+  },
+  {
+    question: "Do you include stamp duty or transfer tax?",
+    answer:
+      "No. Where those taxes usually apply, we show a short note and a link to official guidance. We do not calculate the tax or add it to the monthly payment.",
   },
   {
     question: "Can I compare two scenarios?",
@@ -93,6 +105,8 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
   const [exportStatus, setExportStatus] = useState("");
 
   const countryOption = useMemo(() => getCountryOption(selectedCountry), [selectedCountry]);
+  const selectedPreset = useMemo(() => getCountryPreset(selectedCountry), [selectedCountry]);
+  const stampDutyNote = useMemo(() => getStampDutyNote(selectedCountry), [selectedCountry]);
   const currencyFormatter = useMemo(() => getCurrencyFormatter(selectedCurrency), [selectedCurrency]);
   const formatCurrency = useCallback(
     (value: number) => currencyFormatter.format(Number.isFinite(value) ? Math.round(value) : 0),
@@ -180,6 +194,18 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
       setSelectedCurrency(nextCurrency);
       applyCurrency(nextCurrency);
     }
+  };
+
+  const applyPreset = (preset: CountryPreset) => {
+    const formatter = getCurrencyFormatter(preset.currency);
+    setSelectedCountry(preset.country);
+    setSelectedCurrency(preset.currency);
+    setPropertyPrice(preset.price);
+    setPropertyPriceDisplay(formatter.format(preset.price));
+    setDownPayment(preset.down);
+    setDownPaymentDisplay(formatter.format(preset.down));
+    setInterestRate(preset.illustrativeRate);
+    setLoanTerm(preset.termYears);
   };
 
   const handleMoneyChange = (
@@ -338,26 +364,43 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
             </div>
           </div>
           <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-blue-50 p-6 shadow-lg shadow-slate-200/80">
-            <p className="text-sm font-semibold text-slate-700">Ireland</p>
-            <p className="text-lg font-bold text-slate-900">Need euro figures and Irish notes?</p>
+            <p className="text-sm font-semibold text-slate-700">Country starters</p>
+            <p className="text-lg font-bold text-slate-900">Ireland, UK, US, Spain, or Portugal</p>
             <p className="text-sm text-slate-600">
-              Ireland is in the country list below, or use the dedicated Ireland page for ECB-oriented examples.
+              Each button fills example price, deposit, term, and an illustrative rate band. These are educational
+              starters — not live bank quotes and not a promise of approval.
             </p>
-            <div className="mt-4 flex flex-wrap gap-3">
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700"
-                onClick={() => handleCountryChange("IE")}
-              >
-                Use Ireland defaults
-              </button>
+            <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Country starter presets">
+              {countryPresets.map((preset) => {
+                const isActive = selectedCountry === preset.country;
+                return (
+                  <button
+                    key={preset.id}
+                    type="button"
+                    aria-pressed={isActive}
+                    className={`inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold shadow-sm ${
+                      isActive
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+                    }`}
+                    onClick={() => applyPreset(preset)}
+                  >
+                    {preset.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+            {selectedPreset && (
+              <p className="mt-3 text-xs font-semibold text-slate-600">{selectedPreset.rateBandLabel}</p>
+            )}
+            {selectedCountry === "IE" && (
               <Link
                 href="/ireland"
-                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+                className="mt-3 inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
               >
-                Open /ireland
+                Open the Ireland page
               </Link>
-            </div>
+            )}
           </div>
         </div>
 
@@ -419,13 +462,19 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                       </option>
                     ))}
                   </select>
-                  {selectedCountry === "IE" && (
+                  {selectedPreset && (
                     <p className="helper">
-                      Ireland selected (EUR). You can also use the{" "}
-                      <Link href="/ireland" className="font-semibold text-blue-700 underline">
-                        Ireland calculator
-                      </Link>
-                      .
+                      {selectedPreset.label} starter uses {selectedPreset.currency} and{" "}
+                      {selectedPreset.termYears}-year example numbers.{" "}
+                      {selectedCountry === "IE" && (
+                        <>
+                          You can also use the{" "}
+                          <Link href="/ireland" className="font-semibold text-blue-700 underline">
+                            Ireland calculator
+                          </Link>
+                          .
+                        </>
+                      )}
                     </p>
                   )}
                 </div>
@@ -490,7 +539,10 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     className={`w-full rounded-2xl border bg-white px-4 py-3 text-lg font-semibold text-slate-900 shadow-inner shadow-slate-100 outline-none transition duration-300 focus:-translate-y-0.5 focus:border-blue-500 focus:shadow-[0_12px_30px_rgba(56,189,248,0.18)] ${errors.interestRate ? "input-error" : ""}`}
                   />
                   <p id="interest-rate-helper" className={`helper ${errors.interestRate ? "text-red-600" : ""}`}>
-                    {errors.interestRate ?? "Use your quoted APR or a conservative estimate. We include compounding automatically."}
+                    {errors.interestRate ??
+                      (selectedPreset
+                        ? selectedPreset.rateBandLabel
+                        : "Use a quoted APR or a conservative estimate. Preset rates are illustrative only.")}
                   </p>
                 </div>
               </div>
@@ -583,12 +635,18 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     <div className="rounded-2xl border border-slate-200 bg-blue-50 p-4 text-slate-900">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Loan A</p>
                       <p className="text-2xl font-bold">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly | Total {formatCurrency(loanA.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">
+                        Monthly · Total interest {formatCurrency(loanA.totalInterest)}
+                      </p>
+                      <p className="text-sm text-slate-600">Total paid {formatCurrency(loanA.totalPaid)}</p>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-emerald-50 p-4 text-slate-900">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Loan B</p>
                       <p className="text-2xl font-bold">{formatCurrency(loanB.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly | Total {formatCurrency(loanB.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">
+                        Monthly · Total interest {formatCurrency(loanB.totalInterest)}
+                      </p>
+                      <p className="text-sm text-slate-600">Total paid {formatCurrency(loanB.totalPaid)}</p>
                     </div>
                   </div>
                 </div>
@@ -617,44 +675,77 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="rounded-2xl border border-slate-200 bg-blue-50 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Loan A</p>
-                      <p className="mt-2 text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly payment</p>
+                      <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
+                          <p className="text-sm text-slate-600">Monthly payment</p>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
+                          <p className="text-sm text-slate-600">Total interest</p>
+                        </div>
+                      </div>
                       <ul className="mt-3 space-y-1 text-sm text-slate-700">
-                        <li>Interest: {formatCurrency(loanA.totalInterest)}</li>
                         <li>Total paid: {formatCurrency(loanA.totalPaid)}</li>
                         <li>Principal: {formatCurrency(loanA.principal)}</li>
                       </ul>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-emerald-50 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Loan B</p>
-                      <p className="mt-2 text-3xl font-bold text-slate-900">{formatCurrency(loanB.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Monthly payment</p>
+                      <div className="mt-2 grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanB.monthlyPayment)}</p>
+                          <p className="text-sm text-slate-600">Monthly payment</p>
+                        </div>
+                        <div>
+                          <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanB.totalInterest)}</p>
+                          <p className="text-sm text-slate-600">Total interest</p>
+                        </div>
+                      </div>
                       <ul className="mt-3 space-y-1 text-sm text-slate-700">
-                        <li>Interest: {formatCurrency(loanB.totalInterest)}</li>
                         <li>Total paid: {formatCurrency(loanB.totalPaid)}</li>
                         <li>Principal: {formatCurrency(loanB.principal)}</li>
                       </ul>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Monthly payment</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
-                      <p className="text-sm text-slate-600">Principal + interest only</p>
-                    </div>
-                    <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Total interest</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
-                      <p className="text-sm text-slate-600">Over {loanTerm > 0 ? loanTerm : 0} years</p>
+                  <div className="space-y-4">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-700">Monthly payment</p>
+                        <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.monthlyPayment)}</p>
+                        <p className="text-sm text-slate-600">Principal + interest only</p>
+                      </div>
+                      <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Total interest</p>
+                        <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalInterest)}</p>
+                        <p className="text-sm text-slate-600">Over the full {loanTerm > 0 ? loanTerm : 0}-year term</p>
+                      </div>
                     </div>
                     <div className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-inner shadow-slate-100">
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-700">Total paid</p>
-                      <p className="text-3xl font-bold text-slate-900">{formatCurrency(loanA.totalPaid)}</p>
-                      <p className="text-sm text-slate-600">Includes original principal</p>
+                      <p className="text-2xl font-bold text-slate-900">{formatCurrency(loanA.totalPaid)}</p>
+                      <p className="text-sm text-slate-600">Principal plus all interest. Amortization below stays honest about the split.</p>
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-800">
+                    {stampDutyNote.title}
+                  </p>
+                  <p className="mt-2 text-sm">{stampDutyNote.body}</p>
+                  {stampDutyNote.guidanceUrl && (
+                    <a
+                      href={stampDutyNote.guidanceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex text-sm font-semibold text-amber-900 underline"
+                    >
+                      {stampDutyNote.guidanceLabel ?? "Official guidance"}
+                    </a>
+                  )}
+                </div>
 
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -737,7 +828,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-inner shadow-slate-100">
                       <h3 className="text-lg font-semibold text-slate-900">Assumptions</h3>
                       <ul className="mt-2 list-disc space-y-2 pl-5 text-sm text-slate-700">
-                        <li>No taxes, insurance, PMI, HOA fees, or currency fluctuations included.</li>
+                        <li>No taxes, stamp duty, insurance, PMI, HOA fees, or currency fluctuations included.</li>
                         <li>Fixed-rate loan with level payments; compounding per selected country.</li>
                         <li>Payments made on time with no prepayments or fees.</li>
                       </ul>

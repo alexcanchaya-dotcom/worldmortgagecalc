@@ -8,7 +8,7 @@ if (major < 22) {
 
 const result = spawnSync(
   process.execPath,
-  ["--experimental-strip-types", "--test", "lib/mortgage.test.ts"],
+  ["--experimental-strip-types", "--test", "lib/mortgage.test.ts", "lib/countryPresets.test.ts"],
   { stdio: "inherit" },
 );
 
