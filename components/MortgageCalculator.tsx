@@ -820,21 +820,6 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 </div>
               </div>
             </div>
-
-            <div className="card-surface p-6 sm:p-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Knowledge</p>
-                <h3 className="text-xl font-semibold text-slate-900">FAQs</h3>
-              </div>
-              <div className="mt-4 space-y-3">
-                {faqItems.map((item) => (
-                  <details key={item.question} className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-inner shadow-slate-100">
-                    <summary className="cursor-pointer text-sm font-semibold text-slate-900">{item.question}</summary>
-                    <p className="mt-2 text-sm text-slate-700">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </div>
           </section>
         </div>
 
@@ -863,6 +848,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
           <div className="mt-4 h-64 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <svg
               viewBox="0 0 100 100"
+              preserveAspectRatio="none"
               className="h-full w-full"
               role="img"
               aria-label="Chart of principal share, interest share, and remaining balance over the loan term"
@@ -870,7 +856,8 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
               <polyline
                 fill="none"
                 stroke="#3b82f6"
-                strokeWidth="2"
+                strokeWidth="1.8"
+                strokeLinecap="round"
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
@@ -882,7 +869,8 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
               <polyline
                 fill="none"
                 stroke="#10b981"
-                strokeWidth="2"
+                strokeWidth="1.8"
+                strokeLinecap="round"
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
@@ -894,7 +882,8 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
               <polyline
                 fill="none"
                 stroke="#94a3b8"
-                strokeWidth="2"
+                strokeWidth="1.8"
+                strokeLinecap="round"
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
@@ -904,6 +893,21 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   .join(" ")}
               />
             </svg>
+          </div>
+        </div>
+
+        <div className="card-surface p-6 sm:p-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Knowledge</p>
+            <h3 className="text-xl font-semibold text-slate-900">FAQs</h3>
+          </div>
+          <div className="mt-4 space-y-3">
+            {faqItems.map((item) => (
+              <details key={item.question} className="rounded-2xl border border-slate-200 bg-white/70 p-4 shadow-inner shadow-slate-100">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-900">{item.question}</summary>
+                <p className="mt-2 text-sm text-slate-700">{item.answer}</p>
+              </details>
+            ))}
           </div>
         </div>
 
