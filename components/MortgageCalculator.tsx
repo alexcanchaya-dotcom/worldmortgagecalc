@@ -15,6 +15,7 @@ import {
   parseMoneyInput,
   readShareParams,
   summarizeLoan,
+  svgChartY,
   validateLoanInputs,
 } from "@/lib/mortgage";
 import {
@@ -326,12 +327,12 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
               Plan your mortgage with clear assumptions and instant results
             </h1>
             <p className="max-w-2xl text-lg text-slate-700">
-              Input your price, down payment, APR, and term to see a real-time payment estimate, an amortization
-              snapshot, and the total interest you could pay.
+              Input your price, {fieldHelpers.depositLabel.toLowerCase()}, APR, and term to see a real-time payment
+              estimate, an amortization snapshot, and the total interest you could pay.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <a
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-600 to-emerald-500 px-6 py-3 text-sm font-semibold text-white hover:text-white shadow-lg transition hover:shadow-xl"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-blue-700 to-emerald-700 px-6 py-3 text-sm font-semibold text-white hover:text-white shadow-lg transition hover:shadow-xl"
                 href="#calculator"
               >
                 Start calculating
@@ -602,7 +603,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                       {errors.comparePrice && <span className="helper text-red-600">{errors.comparePrice}</span>}
                     </label>
                     <label className="space-y-2 text-sm font-semibold text-slate-900" htmlFor="compare-down">
-                      Down payment
+                      {fieldHelpers.depositLabel}
                       <input
                         id="compare-down"
                         type="number"
@@ -861,7 +862,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                    const y = 100 - (loanA.monthlyPayment ? (p.principal / loanA.monthlyPayment) * 100 : 0);
+                    const y = svgChartY(p.principal, loanA.monthlyPayment || 1);
                     return `${x},${y}`;
                   })
                   .join(" ")}
@@ -874,7 +875,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                    const y = 100 - (loanA.monthlyPayment ? (p.interest / loanA.monthlyPayment) * 100 : 0);
+                    const y = svgChartY(p.interest, loanA.monthlyPayment || 1);
                     return `${x},${y}`;
                   })
                   .join(" ")}
@@ -887,7 +888,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 points={chartPoints
                   .map((p, idx) => {
                     const x = (idx / Math.max(1, chartPoints.length - 1)) * 100;
-                    const y = (p.balance / maxBalance) * 100;
+                    const y = svgChartY(p.balance, maxBalance);
                     return `${x},${y}`;
                   })
                   .join(" ")}
