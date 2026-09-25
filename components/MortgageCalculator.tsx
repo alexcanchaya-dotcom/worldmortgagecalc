@@ -577,7 +577,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                 <div className="space-y-2 rounded-2xl border border-dashed border-slate-200 bg-white/70 p-4 text-sm text-slate-700">
                   <p className="font-semibold text-slate-900">How we calculate</p>
                   <p>
-                    We apply the standard amortization formula using your country&apos;s compounding frequency. Results
+                    We apply the standard amortization formula using your country{"'"}s compounding frequency. Results
                     update instantly and are shown in your selected currency.
                   </p>
                 </div>
@@ -754,6 +754,20 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                     </a>
                   )}
                 </div>
+
+                {selectedCountry === "IE" && (
+                  <p className="text-sm text-slate-600">
+                    Buying in Ireland?{" "}
+                    <a
+                      href="https://myirishtax.com/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-slate-800 underline underline-offset-2 hover:text-slate-900"
+                    >
+                      See your take-home pay first
+                    </a>
+                  </p>
+                )}
 
                 <div className="flex flex-wrap gap-3">
                   <button
