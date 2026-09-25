@@ -755,20 +755,6 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   )}
                 </div>
 
-                {selectedCountry === "IE" && (
-                  <p className="text-sm text-slate-600">
-                    Buying in Ireland?{" "}
-                    <a
-                      href="https://myirishtax.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-slate-800 underline underline-offset-2 hover:text-slate-900"
-                    >
-                      See your take-home pay first
-                    </a>
-                  </p>
-                )}
-
                 <div className="flex flex-wrap gap-3">
                   <button
                     type="button"
