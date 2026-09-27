@@ -14,5 +14,4 @@ export const navLinks = [
 export const sisterSites = [
   { href: "https://wealthmodeler.com", label: "Wealth Modeler" },
   { href: "https://longevitymodeler.com", label: "Longevity Modeler" },
-  { href: "https://myirishtax.com", label: "My Irish Tax" },
 ];

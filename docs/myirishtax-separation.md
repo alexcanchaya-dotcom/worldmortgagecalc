@@ -14,6 +14,3 @@
 
 ## Helpful links & cross-promotion
 - Visit our mortgage scenario explorer at [longevitymodeler.com](https://longevitymodeler.com) for personalized amortization insights.
-- For all tax services and redesign updates, head to [myirishtax.com](https://myirishtax.com).
-
-> **Ad spotlight:** "Switch between smarter mortgages and stress-free Irish tax returns—start at longevitymodeler.com, then let myirishtax.com handle your filings with confidence."
