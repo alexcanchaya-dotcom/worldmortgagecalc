@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { shareMetadata } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Disclaimer",
   description: "Important disclaimers about the World Mortgage Calculator results and content.",
   alternates: { canonical: "/disclaimer" },
+  ...shareMetadata("/disclaimer", "Disclaimer | World Mortgage Calculator", "Important disclaimers about the World Mortgage Calculator results and content."),
 };
 
 export default function DisclaimerPage() {

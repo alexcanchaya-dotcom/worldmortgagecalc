@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { contactEmail } from "@/lib/site";
+import { contactEmail, shareMetadata } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How World Mortgage Calculator handles data, cookies, and analytics.",
   alternates: { canonical: "/privacy-policy" },
+  ...shareMetadata("/privacy-policy", "Privacy Policy | World Mortgage Calculator", "How World Mortgage Calculator handles data, cookies, and analytics."),
 };
 
 export default function PrivacyPolicyPage() {
