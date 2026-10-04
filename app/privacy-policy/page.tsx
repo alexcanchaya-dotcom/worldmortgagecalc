@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
             We built World Mortgage Calculator to give you quick mortgage estimates while keeping your data private.
             This page explains what we collect (very little), why, and how we protect your privacy.
           </p>
-          <p className="text-sm text-slate-600">Effective date: September 14, 2026</p>
+          <p className="text-sm text-slate-600">Effective date: October 4, 2026</p>
         </header>
 
         <section className="space-y-3 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-6 shadow-lg shadow-slate-200/80">
@@ -56,9 +56,11 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-3 rounded-3xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/80">
           <h2 className="text-2xl font-semibold text-slate-900">Analytics and ads</h2>
           <p className="text-slate-700">
-            We do not currently run third-party ads or ad pixels. Hosting and basic request logs from our provider may
-            include standard technical data such as IP address and browser type. If we later add privacy-respecting
-            analytics or labeled ads, we will update this page first and describe what changed.
+            We use Vercel Web Analytics to count page views. It is cookieless and anonymous: it does not set cookies,
+            does not identify you, and only gives us aggregated numbers such as page views, referring sites, country,
+            and device type. We do not run ads, ad pixels, or other third-party trackers. Hosting and basic request logs
+            from our provider may include standard technical data such as IP address and browser type. If we ever add
+            labeled ads or other analytics, we will update this page first and describe what changed.
           </p>
         </section>
 

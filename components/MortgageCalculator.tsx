@@ -802,7 +802,7 @@ export default function MortgageCalculator({ initialSearch = "" }: { initialSear
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <h3 className="text-lg font-semibold text-slate-900">Trust & transparency</h3>
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">Encrypted</span>
+                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-700">Runs in your browser</span>
                       <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-700">No data stored</span>
                     </div>
                   </div>
