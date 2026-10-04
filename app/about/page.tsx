@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { shareMetadata } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About World Mortgage Calculator",
   description: "Mission, methodology, and data assumptions behind World Mortgage Calculator.",
   alternates: { canonical: "/about" },
+  ...shareMetadata("/about", "About World Mortgage Calculator", "Mission, methodology, and data assumptions behind World Mortgage Calculator."),
 };
 
 export default function AboutPage() {

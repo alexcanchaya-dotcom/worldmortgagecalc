@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { contactEmail } from "@/lib/site";
+import { contactEmail, shareMetadata } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact World Mortgage Calculator",
   description: "Email the World Mortgage Calculator team for support, partnership, or feedback.",
   alternates: { canonical: "/contact" },
+  ...shareMetadata("/contact", "Contact World Mortgage Calculator", "Email the World Mortgage Calculator team for support, partnership, or feedback."),
 };
 
 export default function ContactPage() {

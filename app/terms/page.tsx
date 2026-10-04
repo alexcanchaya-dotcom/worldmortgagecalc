@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { shareMetadata } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Terms of use for World Mortgage Calculator.",
   alternates: { canonical: "/terms" },
+  ...shareMetadata("/terms", "Terms of Service | World Mortgage Calculator", "Terms of use for World Mortgage Calculator."),
 };
 
 export default function TermsPage() {

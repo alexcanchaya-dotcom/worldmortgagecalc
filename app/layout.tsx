@@ -20,13 +20,11 @@ export const metadata: Metadata = {
     title: "World Mortgage Calculator",
     description:
       "Responsive mortgage calculator with amortization charts, transparency, and global currency support.",
-    url: siteUrl,
     siteName: "World Mortgage Calculator",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@worldmortgagecalc",
     title: "World Mortgage Calculator",
     description:
       "Transparent mortgage calculator with charts, assumptions, and global currency options.",

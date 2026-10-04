@@ -1,4 +1,12 @@
+import type { Metadata } from "next";
 import MortgageCalculator from "@/components/MortgageCalculator";
+import { shareMetadata } from "@/lib/site";
+
+export const metadata: Metadata = shareMetadata(
+  "/",
+  "World Mortgage Calculator",
+  "Responsive mortgage calculator with amortization charts, transparency, and global currency support.",
+);
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
